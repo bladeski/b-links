@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-weight: 400;
+
+  src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+  url('../fonts/OpenDyslexic-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-weight: 700;
+
+  src: url('../fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+  url('../fonts/OpenDyslexic-Bold.woff') format('woff');
+}
+
+body,
+input,
+button {
+  font-family: 'OpenDyslexic';
+}
