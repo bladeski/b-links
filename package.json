@@ -5,6 +5,7 @@
   "author": "Jonathan Blades",
   "license": "MIT",
   "source": "src/index.html",
+  "publicUrl": "https://bladeski.github.io/b-links/",
   "scripts": {
     "clean:dist": "rimraf dist",
     "clean:dist-serve": "rimraf dist-serve",
