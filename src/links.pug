@@ -1,0 +1,18 @@
+html
+  include templates/head.pug
+  include templates/header.pug
+  main
+    article
+      h2 Links
+        span(class="subhead") A curated list of useful links...
+      p These are some useful links
+      section
+        h3 UX
+        ul 
+          li
+            a(
+              href="https://css-tricks.com/why-dont-developers-take-accessibility-seriously/"
+              aria-label="3 ways we fail to take accessibility seriously (CSS Tricks)"
+              )
+              | 3 ways we fail to take accessibility seriously (CSS Tricks)
+  include templates/footer.pug

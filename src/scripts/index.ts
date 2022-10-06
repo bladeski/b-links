@@ -1,9 +1,9 @@
 import PreferenceService from './PreferenceService';
 
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
   performance.mark('Start app')
-  console.log(`You're running JavaScript... let's have some fun!`);
+  console.debug(`You're running JavaScript... let's have some fun!`);
 
   const preferenceService = new PreferenceService();
 
-};
+});
