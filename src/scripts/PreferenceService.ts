@@ -17,15 +17,13 @@ export default class PreferenceService {
     
     const settingsButton = document.getElementById('Settings') as HTMLButtonElement;
     settingsButton.disabled = false;
-    settingsButton.ariaLabel = 'View settings.';
-    settingsButton.addEventListener('click', () => {
-      this.updatePref('showPreferences', !this.currentPrefs.showPreferences);
-    });
+    settingsButton.ariaLabel = 'Show settings.';
+    settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
 
     this.initialiseForm();
   }
 
-  public updatePref(prefName: keyof Preferences, value: boolean) {
+  private updatePref(prefName: keyof Preferences, value: boolean) {
     const prefs = { ...this.currentPrefs };
     prefs[prefName] = value;
     this.savePrefs(prefs);
@@ -46,7 +44,7 @@ export default class PreferenceService {
     }
   }
 
-  public getPrefs(): Preferences {
+  private getPrefs(): Preferences {
     const prefs: Preferences = {
       ...this.prefDefaults
     };
@@ -92,6 +90,12 @@ export default class PreferenceService {
     //   );
     // });
     performance.mark('Loaded settings')
+  }
+
+  private onSettingsClick(ev: MouseEvent) {
+    this.updatePref('showPreferences', !this.currentPrefs.showPreferences);
+    (ev.currentTarget as HTMLButtonElement).textContent = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} Settings`;
+    (ev.currentTarget as HTMLButtonElement).ariaLabel = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} settings`;
   }
 
   private showPreferences(show: boolean) {

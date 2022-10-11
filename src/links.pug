@@ -2,10 +2,12 @@ doctype html
 html(lang="en-GB")
   include templates/head.pug
   include templates/header.pug
+  include templates/nav.pug
+  +navbar('links')
   main
     article
       h2 Links
-        span(class="subhead") A curated list of useful links...
+        span.subhead A curated list of useful links...
       p These are some useful links
       section
         h3 UX

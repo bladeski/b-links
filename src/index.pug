@@ -2,10 +2,12 @@ doctype html
 html(lang="en-GB")
   include templates/head.pug
   include templates/header.pug
+  include templates/nav.pug
+  +navbar('index')
   main
     article
       h2 About
-        span(class="subhead") What is b-links?
+        span.subhead What is b-links?
       p This is my blog and a list of useful links. It is very much a work in progress!
       p It is built with the following principles in mind...
       ul
