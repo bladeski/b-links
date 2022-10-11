@@ -79,16 +79,16 @@ export default class PreferenceService {
       );
     });
 
-    // const enhancedStylesSelector = this.preferenceForm?.querySelector(
-    //   '[name="showEnhancedStyles"]'
-    // ) as HTMLInputElement;
-    // enhancedStylesSelector.checked = prefs.showEnhancedStyles;
-    // enhancedStylesSelector.addEventListener('click', (ev: MouseEvent) => {
-    //   this.updatePref(
-    //     'showEnhancedStyles',
-    //     (ev.target as HTMLInputElement)?.checked
-    //   );
-    // });
+    const enhancedStylesSelector = this.preferenceForm?.querySelector(
+      '[name="showEnhancedStyles"]'
+    ) as HTMLInputElement;
+    enhancedStylesSelector.checked = prefs.showEnhancedStyles;
+    enhancedStylesSelector.addEventListener('click', (ev: MouseEvent) => {
+      this.updatePref(
+        'showEnhancedStyles',
+        (ev.target as HTMLInputElement)?.checked
+      );
+    });
     performance.mark('Loaded settings')
   }
 

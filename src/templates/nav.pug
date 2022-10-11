@@ -2,8 +2,11 @@ mixin navbar(currentPage)
   nav
     ul
       li
-        a.tag(href="./index.pug" aria-label="About b-links." class={ selected: currentPage === 'index'}) About
+        a.tag(href="./index.pug" aria-label="About b-links." class={ selected: currentPage === 'index'}) 
+          div About
       li
-        a.tag(href="./links.pug" aria-label="Useful links." class={ selected: currentPage === 'links'}) Links
+        a.tag(href="./links.pug" aria-label="Useful links." class={ selected: currentPage === 'links'}) 
+          div Links
       li
-        a.tag(href="./blog.pug" aria-label="My blog." class={ selected: currentPage === 'blog'}) Blog
+        a.tag(href="./blog.pug" aria-label="My blog." class={ selected: currentPage === 'blog'}) 
+          div Blog

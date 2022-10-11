@@ -1,3 +1,75 @@
+:root {
+  --scrollbar-colour: hsl(var(--theme-colour-values), 30%);
+}
+
 body {
-  background-color: red;
+  display: -ms-grid;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+
+  -ms-grid-rows: auto;
+  accent-color: var(--theme-colour);
+
+  a,
+  button {
+    position: relative;
+
+    &:hover {
+      &::after {
+        width: max-content;
+      }
+    }
+  }
+
+  header {
+    grid-row: 1;
+  }
+
+  nav {
+    grid-row: 2;
+
+    ul {
+      display: grid;
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+    }
+  }
+
+  main {
+    grid-row: 3;
+  }
+
+  footer {
+    grid-row: 4;
+  }
+}
+
+::-webkit-scrollbar-track {
+  border-radius: var(--border-radius);
+
+  background-color: var(--background-colour);
+
+  // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+
+  background-color: var(--background-colour);
+}
+
+::-webkit-scrollbar-thumb {
+  margin-top: var(--padding-small);
+
+  border-radius: var(--border-radius);
+
+  background-color: var(--theme-colour);
+
+  transition: background-color 200ms ease-in-out;
+
+  &:hover {
+    background-color: var(--primary-font-colour);
+  }
+
+  // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
