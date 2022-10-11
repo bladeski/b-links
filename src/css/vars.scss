@@ -1,0 +1,18 @@
+$border-radius: 6px;
+$padding-small: 0.5rem;
+$padding-standard: 1rem;
+$padding-large: 2rem;
+$padding-page-width: 5vw;
+$body-font-size: 20px;
+$font-size-regular: 1rem;
+$font-size-l: 1.5rem;
+$font-size-xl: 2.25rem;
+$font-size-xxl: 3.375rem;
+$font-size-s: 0.667rem;
+
+/* color: hsl(314, 71%, 16%); */
+// $theme-colour: #691254;
+$theme-colour: hsl(314, 71%, 24%);
+$primary-font-colour: darken($theme-colour, 8%);
+$background-colour: lighten($theme-colour, 74%);
+$tooltip-colour: darken($theme-colour,16%);
