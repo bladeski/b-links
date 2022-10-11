@@ -11,4 +11,4 @@ I've built this with the following principles in mind...
 * Simplicity
 * Progressive Enhancement
 
-Check out the site [here]('https://bladeski.github.io/b-links/index.html')
+Check out the deployed site over at [bladeski.github.io/b-links](https://bladeski.github.io/b-links/index.html "b-links")
