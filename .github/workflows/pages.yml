@@ -42,6 +42,7 @@ jobs:
           git_username: ${{ github.actor }}
           newversion: patch
           push_version_commit: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v2
