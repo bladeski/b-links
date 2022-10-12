@@ -52,8 +52,8 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v1
 
-      - name: Create Release
-        uses: ncipollo/release-action@v1.11.1
-        with:
-          artifacts: './dist/'
-          generateReleaseNotes: true
+#       - name: Create Release
+#         uses: ncipollo/release-action@v1.11.1
+#         with:
+#           artifacts: './dist/'
+#           generateReleaseNotes: true
