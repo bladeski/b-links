@@ -70,7 +70,7 @@ button {
   &:hover {
     &::after {
       position: absolute;
-      top: -2rem;
+      top: -1rem;
       left: 1rem;
       padding: 0.25rem 0.5rem;
 
@@ -80,6 +80,7 @@ button {
 
       color: $background-colour;
       font-size: $font-size-s;
+      font-weight: 400;
 
       content: attr(aria-label);
     }

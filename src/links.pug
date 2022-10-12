@@ -8,14 +8,24 @@ html(lang="en-GB")
     article
       h2 Links
         span.subhead A curated list of useful links...
-      p These are some useful links
-      section
-        h3 UX
-        ul 
-          li
-            a(
-              href="https://css-tricks.com/why-dont-developers-take-accessibility-seriously/"
-              aria-label="3 ways we fail to take accessibility seriously (CSS Tricks)"
-              )
-              | 3 ways we fail to take accessibility seriously (CSS Tricks)
+      noscript
+        p
+          | Unfortunately JavaScript is required to see my full list of links, and it appears that 
+          | it is disabled in your browser. In the meantime, here is a shorter list of links related to
+          | this site:
+        section
+          h3 GitHub
+          ul 
+            li
+              a(
+                href="https://github.com/bladeski/b-links"
+                aria-label="b-links source code."
+                )
+                | b-links source code.
+            li
+              a(
+                href="https://github.com/bladeski"
+                aria-label="My GitHub profile."
+                )
+                | My GitHub profile.
   include templates/footer.pug
