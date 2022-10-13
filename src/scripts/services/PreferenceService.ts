@@ -9,7 +9,6 @@ export default class PreferenceService {
   private preferenceForm = document.forms.namedItem('Preferences');
 
   constructor() {
-    performance.mark('Loading settings');
     this.currentPrefs = this.getPrefs();
 
     this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
@@ -89,7 +88,6 @@ export default class PreferenceService {
         (ev.target as HTMLInputElement)?.checked
       );
     });
-    performance.mark('Loaded settings')
   }
 
   private onSettingsClick(ev: MouseEvent) {
@@ -112,7 +110,7 @@ export default class PreferenceService {
   }
 }
 
-enum StylesheetNames {
+export enum StylesheetNames {
   DYSLEXIC_STYLES = 'DyslexicStyles',
   ENHANCED_STYLES = 'EnhancedStyles',
 };
