@@ -1,4 +1,4 @@
-import PreferenceService from './PreferenceService';
+import PreferenceService from './services/PreferenceService';
 
 document.addEventListener('DOMContentLoaded', () => {
   performance.mark('Start app')
