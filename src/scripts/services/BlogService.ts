@@ -59,8 +59,7 @@ export default class BlogService {
     const postEls: HTMLElement[] = posts.map(this.createBlogPostSummaryElement.bind(this));
   
     main?.querySelectorAll('[id^=blog-post_]').forEach((node) => node.remove());
-    main?.append(...postEls);
-    
+    main?.append(...postEls);    
   }
   
   private createBlogPostSummaryElement(post: BlogPost): HTMLElement {
