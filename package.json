@@ -1,6 +1,6 @@
 {
   "name": "blinks",
-  "version": "1.0.15",
+  "version": "1.0.14",
   "description": "A curated list of useful links.",
   "author": "Jonathan Blades",
   "license": "MIT",
@@ -15,8 +15,10 @@
   },
   "browserslist": "since 2015",
   "devDependencies": {
+    "@parcel/packager-raw-url": "2.7.0",
     "@parcel/transformer-pug": "2.7.0",
     "@parcel/transformer-sass": "2.7.0",
+    "@parcel/transformer-webmanifest": "2.7.0",
     "@types/dompurify": "^2.3.4",
     "@types/jest": "^29.1.2",
     "@types/marked": "^4.0.7",
