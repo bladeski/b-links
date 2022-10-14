@@ -64,3 +64,4 @@ jobs:
         with:
           artifacts: './dist/'
           generateReleaseNotes: true
+          tag: ${{ steps.version-bump.outputs.newTag }}
