@@ -26,5 +26,4 @@ jobs:
       - name: Report LCOV
         uses: checkity/upload@v1
         with:
-          # Comma separated list of coverage files to upload, supports globs. 
           file-pattern: 'coverage/lcov.info'
