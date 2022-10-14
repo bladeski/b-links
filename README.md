@@ -1,5 +1,7 @@
 # b-links
 
+![coverage](https://badge.checkity.io/bladeski/b-links/b-links-coverage.svg)
+
 ## About
 
 This is my blog and a compilation of links that I find useful - a sort of library/reference. It is very much a work in progress!
