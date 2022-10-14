@@ -87,6 +87,18 @@ button {
   }
 }
 
+a {
+  color: $link-colour;
+
+  &:visited {
+    color: $link-visited-colour;
+  }
+
+  &:active {
+    color: $theme-colour;
+  }
+}
+
 button {
   &:disabled {
     cursor: not-allowed;
@@ -115,11 +127,10 @@ footer {
 
 main {
   flex: 1 0 auto;
-  overflow: hidden;
+  overflow: auto;
 
   article {
     max-height: 100%;
-    overflow: auto;
   }
 }
 
@@ -191,6 +202,10 @@ nav {
   text-align: left;
   text-align: center;
   text-decoration: none;
+
+  &:visited {
+    color: $background-colour;
+  }
 
   div {
     position: relative;

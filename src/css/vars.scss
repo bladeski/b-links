@@ -14,5 +14,7 @@ $font-size-s: 0.667rem;
 // $theme-colour: #691254;
 $theme-colour: hsl(314, 71%, 24%);
 $primary-font-colour: darken($theme-colour, 8%);
+$link-colour: lighten($theme-colour, 20%);
+$link-visited-colour: lighten($theme-colour, 10%);
 $background-colour: lighten($theme-colour, 74%);
 $tooltip-colour: darken($theme-colour,16%);
