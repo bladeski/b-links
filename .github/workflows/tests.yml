@@ -26,5 +26,8 @@ jobs:
       - name: Report LCOV
         uses: checkity/upload@v1
         with:
+          badge-enabled: true
+          badge-token: 'b-links-coverage'
           file-pattern: 'coverage/lcov.info'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
