@@ -24,8 +24,7 @@ jobs:
       - name: Run yarn test
         run: yarn run test
       - name: Report LCOV
-        uses: zgosalvez/github-actions-report-lcov@v1.5.0
+        uses: checkity/upload@v1
         with:
-          coverage-files: 'coverage/lcov.info'
-          artifact-name: 'coverage'
-          minimum-coverage: 50
+          # Comma separated list of coverage files to upload, supports globs. 
+          file-pattern: 'coverage/lcov.info'
