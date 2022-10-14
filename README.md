@@ -1,6 +1,6 @@
 # b-links
 
-![coverage](https://badge.checkity.io/bladeski/b-links/b-links-coverage.svg)
+!\[coverage\](https://badge.checkity.io/bladeski/b-links/b-links-coverage.svg)
 
 ## About
 
