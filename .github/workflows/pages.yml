@@ -42,6 +42,7 @@ jobs:
       
       - name: Automated Version Bump
         uses: phips28/gh-action-bump-version@v9.0.31
+        id: version-bump
         with:
           tag-prefix: 'v'
           commit-message: 'CI: bumps version to {{version}} [skip ci]'
