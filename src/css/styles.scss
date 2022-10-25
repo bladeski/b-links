@@ -121,7 +121,8 @@ input[type='checkbox'] {
 header,
 nav,
 main,
-footer {
+footer,
+#Preferences {
   padding: $padding-small $padding-page-width;
 }
 
@@ -149,12 +150,18 @@ footer {
   font-size: $font-size-s;
 
   button {
+    display: flex;
+
     border: none;
 
     background-color: transparent;
 
     color: $background-colour;
     font-size: $font-size-s;
+  }
+
+  svg {
+    fill: $background-colour;
   }
 }
 
@@ -264,7 +271,6 @@ nav {
   left: 0;
   width: 100%;
   margin: 0;
-  padding: $padding-small $padding-page-width;
 
   background-color: $primary-font-colour;
 
@@ -281,7 +287,8 @@ nav {
   header,
   nav,
   main,
-  footer {
+  footer,
+  #Preferences {
     padding: $padding-small $padding-page-width;
   }
 
@@ -302,7 +309,8 @@ nav {
   header,
   nav,
   main,
-  footer {
+  footer,
+  #Preferences {
     padding: $padding-small $padding-page-width;
   }
 }

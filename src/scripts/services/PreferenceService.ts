@@ -14,12 +14,23 @@ export default class PreferenceService {
     this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
     this.enableStyles(StylesheetNames.ENHANCED_STYLES, this.currentPrefs.showEnhancedStyles);
     
-    const settingsButton = document.getElementById('Settings') as HTMLButtonElement;
-    settingsButton.disabled = false;
-    settingsButton.ariaLabel = 'Show settings.';
-    settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
+    this.setupSettingsButton();
 
     this.initialiseForm();
+  }
+
+  private setupSettingsButton() {
+    const settingsButtonTemplate = document.getElementById('SettingsButtonTemplate') as HTMLTemplateElement;
+    const content = settingsButtonTemplate.content.cloneNode(true) as HTMLElement;
+    const footer = document.querySelector('footer');
+    footer?.appendChild(content);
+
+    const settingsButton = document.getElementById('SettingsButton') as HTMLButtonElement;
+    if (settingsButton) {
+      settingsButton.disabled = false;
+      settingsButton.ariaLabel = 'Show settings.';
+      settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
+    }
   }
 
   private updatePref(prefName: keyof Preferences, value: boolean) {
@@ -92,7 +103,7 @@ export default class PreferenceService {
 
   private onSettingsClick(ev: MouseEvent) {
     this.updatePref('showPreferences', !this.currentPrefs.showPreferences);
-    (ev.currentTarget as HTMLButtonElement).textContent = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} Settings`;
+    // (ev.currentTarget as HTMLButtonElement).textContent = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} Settings`;
     (ev.currentTarget as HTMLButtonElement).ariaLabel = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} settings`;
   }
 
