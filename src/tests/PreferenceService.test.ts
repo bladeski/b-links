@@ -11,29 +11,33 @@ beforeEach(() => {
 
   const settings = document.createElement('div');
   settings.innerHTML = `
-    <button id="Settings" disabled aria-label="Settings button">Show Settings</settings>
-    <form id="Preferences" class="hide">
-      <input type="checkbox" name="showDyslexicStyles" />
-      <input type="checkbox" name="showEnhancedStyles" />
-    </form>
+    <footer>
+      <form id="Preferences" class="hide">
+        <input type="checkbox" name="showDyslexicStyles" />
+        <input type="checkbox" name="showEnhancedStyles" />
+      </form>
+    </footer>
+    <template id="SettingsButtonTemplate">
+      <button id="SettingsButton">Settings</button>
+    </template>
   `
   document.body.replaceChildren(settings);
 });
 
 describe('Preference service', () => {
-  test('the settings button text changes on click', () => {
+  test('the settings button aria text changes on click', () => {
     new PreferenceService();
     const button = document.querySelector('button');
 
-    expect(button?.textContent).toContain('Show Settings');
+    expect(button?.ariaLabel).toContain('Show Settings');
 
     button?.click();
 
-    expect(button?.textContent).toBe('Hide Settings');
+    expect(button?.ariaLabel).toBe('Hide Settings');
 
     button?.click();
 
-    expect(button?.textContent).toBe('Show Settings');
+    expect(button?.ariaLabel).toBe('Show Settings');
   });
 
   test('the preferences form shows on settings click', () => {

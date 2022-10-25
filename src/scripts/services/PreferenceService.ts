@@ -28,7 +28,7 @@ export default class PreferenceService {
     const settingsButton = document.getElementById('SettingsButton') as HTMLButtonElement;
     if (settingsButton) {
       settingsButton.disabled = false;
-      settingsButton.ariaLabel = 'Show settings.';
+      settingsButton.ariaLabel = 'Show Settings.';
       settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
     }
   }
