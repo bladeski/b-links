@@ -29,15 +29,15 @@ describe('Preference service', () => {
     new PreferenceService();
     const button = document.querySelector('button');
 
-    expect(button?.ariaLabel).toContain('Show Settings');
+    expect(button?.ariaLabel).toContain('Show settings');
 
     button?.click();
 
-    expect(button?.ariaLabel).toBe('Hide Settings');
+    expect(button?.ariaLabel).toBe('Hide settings');
 
     button?.click();
 
-    expect(button?.ariaLabel).toBe('Show Settings');
+    expect(button?.ariaLabel).toBe('Show settings');
   });
 
   test('the preferences form shows on settings click', () => {
