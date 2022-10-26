@@ -28,6 +28,7 @@ jobs:
         with:
           badge-enabled: true
           badge-token: 'b-links-coverage'
+          diff-enabled: false
           file-pattern: 'coverage/lcov.info'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           
