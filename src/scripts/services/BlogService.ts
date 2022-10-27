@@ -91,7 +91,7 @@ export default class BlogService {
       }
 
       const date = blogPost.querySelector('.subhead') as HTMLElement;
-      date.textContent = `First posted ${post.createdAt.toLocaleDateString()}`;
+      date.textContent = `First posted ${post.createdAt?.toLocaleDateString()}`;
 
       if (isSummary && post.description) {
         const description = blogPost.querySelector(
@@ -127,8 +127,8 @@ export default class BlogService {
       posts
         .map((post) => ({
           ...post,
-          createdAt: new Date(post.createdAt),
-          updatedAt: new Date(post.updatedAt),
+          createdAt: new Date(post.createdAt || ''),
+          updatedAt: new Date(post.updatedAt || ''),
         }))
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     );
