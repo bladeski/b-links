@@ -70,7 +70,7 @@ button {
   &:hover {
     &::after {
       position: absolute;
-      top: -1rem;
+      bottom: 100%;
       left: 1rem;
       padding: 0.25rem 0.5rem;
 
@@ -83,6 +83,7 @@ button {
       font-weight: 400;
 
       content: attr(aria-label);
+      pointer-events: none;
     }
   }
 }
@@ -112,6 +113,13 @@ label {
   justify-content: space-between;
 
   gap: $padding-small;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid $primary-font-colour;
+  border-radius: $border-radius;
 }
 
 input[type='checkbox'] {
@@ -158,6 +166,8 @@ footer {
 
     color: $background-colour;
     font-size: $font-size-s;
+
+    cursor: pointer;
   }
 
   svg {
