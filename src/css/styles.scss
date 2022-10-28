@@ -304,6 +304,10 @@ button,
     }
   }
 
+  &.selected {
+    background-color: $primary-font-colour;
+  }
+
   &.selected,
   &.selected:hover {
     div:before {

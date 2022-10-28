@@ -6,7 +6,7 @@ import { marked } from 'marked';
 
 enum FormType {
   ADD = 'ADD',
-  EDIT = 'EDIT'
+  EDIT = 'EDIT',
 }
 
 export default class ManagementService {
@@ -18,7 +18,10 @@ export default class ManagementService {
 
   constructor() {
     this.postTypeForm = document.forms.namedItem('PostTypeForm');
-    this.postTypeForm?.addEventListener('change', this.onEditPostTypeForm.bind(this));
+    this.postTypeForm?.addEventListener(
+      'change',
+      this.onEditPostTypeForm.bind(this)
+    );
 
     this.postForm = document.forms.namedItem('PostForm');
     this.postForm?.addEventListener('submit', this.onSubmitPostForm.bind(this));
@@ -34,12 +37,17 @@ export default class ManagementService {
 
   private onEditPostTypeForm(event: Event) {
     const target = event.target as HTMLInputElement;
-    const selectInput = this.postTypeForm?.querySelector('select') as HTMLSelectElement;
-    const idInput = this.postForm?.querySelector('input[name="id"]') as HTMLInputElement;
-  
+    const selectInput = this.postTypeForm?.querySelector(
+      'select'
+    ) as HTMLSelectElement;
+    const idInput = this.postForm?.querySelector(
+      'input[name="id"]'
+    ) as HTMLInputElement;
+
     if (target.type === 'radio') {
       this.postForm?.reset();
-      this.blogFormType = target.value === FormType.EDIT ? FormType.EDIT : FormType.ADD;
+      this.blogFormType =
+        target.value === FormType.EDIT ? FormType.EDIT : FormType.ADD;
       switch (this.blogFormType) {
         case FormType.ADD:
           idInput.value = '';
@@ -60,14 +68,19 @@ export default class ManagementService {
   private onSubmitPostForm(event: SubmitEvent) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const id = this.blogFormType === FormType.EDIT ? formData.get('id')?.toString() : undefined;
+    const id =
+      this.blogFormType === FormType.EDIT
+        ? formData.get('id')?.toString()
+        : undefined;
     const post: BlogPost = {
       title: formData.get('title')?.toString() || '',
       description: formData.get('description')?.toString() || '',
       post: formData.get('post')?.toString() || '',
-      categories: formData.get('categories')?.toString().split(' ') || []
+      categories: formData.get('categories')?.toString().split(' ') || [],
     };
-    ApiService.addBlogPost(post, id).then(this.postForm?.reset);
+    ApiService.addBlogPost(post, id).then(() => {
+      this.postForm?.reset();
+    });
   }
 
   private onSubmitLinkForm(event: SubmitEvent) {
@@ -76,9 +89,11 @@ export default class ManagementService {
     const link: Link = {
       title: formData.get('title')?.toString() || '',
       url: formData.get('url')?.toString() || '',
-      categories: formData.get('categories')?.toString().split(' ') || []
+      categories: formData.get('categories')?.toString().split(' ') || [],
     };
-    ApiService.addLink(link).then(this.linkForm?.reset);
+    ApiService.addLink(link).then(() => {
+      this.linkForm?.reset();
+    });
   }
 
   private onUpdatePostInput(event: Event) {
@@ -94,7 +109,7 @@ export default class ManagementService {
   private onGetBlogPosts(posts: BlogPost[]) {
     this.blogPosts = posts;
     const selectElement = this.postTypeForm?.querySelector('select');
-    posts.forEach(post => {
+    posts.forEach((post) => {
       const option = document.createElement('option');
       option.value = post._id || '';
       option.text = `${post.title}`;
@@ -103,15 +118,25 @@ export default class ManagementService {
   }
 
   private initialiseEditForm(id: string) {
-    const selectedPost = this.blogPosts.find(post => post._id === id);
-    
+    const selectedPost = this.blogPosts.find((post) => post._id === id);
+
     if (selectedPost) {
-      const titleInput = this.postForm?.querySelector('input[name="title"]') as HTMLInputElement;
-      const descriptionInput = this.postForm?.querySelector('input[name="description"]') as HTMLInputElement;
-      const contentInput = this.postForm?.querySelector('textarea[name="post"]') as HTMLInputElement;
-      const categoriesInput = this.postForm?.querySelector('input[name="categories"]') as HTMLInputElement;
-      const idInput = this.postForm?.querySelector('input[name="id"]') as HTMLInputElement;
-  
+      const titleInput = this.postForm?.querySelector(
+        'input[name="title"]'
+      ) as HTMLInputElement;
+      const descriptionInput = this.postForm?.querySelector(
+        'input[name="description"]'
+      ) as HTMLInputElement;
+      const contentInput = this.postForm?.querySelector(
+        'textarea[name="post"]'
+      ) as HTMLInputElement;
+      const categoriesInput = this.postForm?.querySelector(
+        'input[name="categories"]'
+      ) as HTMLInputElement;
+      const idInput = this.postForm?.querySelector(
+        'input[name="id"]'
+      ) as HTMLInputElement;
+
       titleInput.value = selectedPost.title;
       descriptionInput.value = selectedPost.description;
       contentInput.value = selectedPost.post;
@@ -122,4 +147,3 @@ export default class ManagementService {
     }
   }
 }
-

@@ -6,8 +6,8 @@ export default class ApiService {
       fetch(
         `${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}`
       )
-        .then((res) => res.json())
-        .then(res);
+        .then((result) => result.json())
+        .then((result) => res(result));
     });
   }
   static addBlogPost(post: BlogPost, id?: string): Promise<BlogPost> {
@@ -26,8 +26,8 @@ export default class ApiService {
           }
         }
       )
-        .then((res) => res.json())
-        .then(res);
+        .then((result) => result.json())
+        .then((result) => res(result));
     });
   }
   static getLinks(): Promise<Link[]> {
@@ -35,8 +35,8 @@ export default class ApiService {
       fetch(
         `${process.env.API_URL}link?code=${process.env.API_LINK_KEY}`
       )
-        .then((res) => res.json())
-        .then(res);
+        .then((result) => result.json())
+        .then((result) => res(result));
     });
   }
   static addLink(link: Link): Promise<Link> {
@@ -54,8 +54,8 @@ export default class ApiService {
           }
         }
       )
-      .then((res) => res.json())
-      .then(res);
+      .then((result) => result.json())
+      .then((result) => res(result));
     });
   }
 }

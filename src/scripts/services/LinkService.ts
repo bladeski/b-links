@@ -90,7 +90,9 @@ export default class LinkService {
     categories.forEach(category => {
       linkGroups.push({
         category,
-        links: links.filter(link => link.categories?.some(linkCategory => linkCategory === category))
+        links: links
+          .filter(link => link.categories?.some(linkCategory => linkCategory === category))
+          .sort((a, b) => a.title.localeCompare(b.title))
       });
     });
 
