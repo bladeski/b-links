@@ -4,6 +4,7 @@ body {
   display: -ms-grid;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
+  overflow: hidden;
 
   -ms-grid-rows: auto;
   accent-color: $theme-colour;

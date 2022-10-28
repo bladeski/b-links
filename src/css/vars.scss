@@ -1,3 +1,4 @@
+$border-width: 2px;
 $border-radius: 6px;
 $padding-small: 0.5rem;
 $padding-standard: 1rem;
@@ -17,4 +18,5 @@ $primary-font-colour: darken($theme-colour, 8%);
 $link-colour: lighten($theme-colour, 20%);
 $link-visited-colour: lighten($theme-colour, 10%);
 $background-colour: lighten($theme-colour, 74%);
+$secondary-background-colour: lighten($theme-colour, 70%);
 $tooltip-colour: darken($theme-colour,16%);

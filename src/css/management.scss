@@ -68,4 +68,11 @@ body {
       }
     }
   }
+
+  .post-form-type-selection {
+    display: flex;
+    padding: $padding-standard 0;
+
+    gap: $padding-large;
+  }
 }
