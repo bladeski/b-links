@@ -8,8 +8,14 @@ html(lang="en-GB")
   main
     h2 Management
     article
-      h3 Add Blog Post 
-      form#AddPostForm
+      h3 Blog Post 
+      form#PostTypeForm.post-form-type-selection
+        label.radio-control Add
+          input.selected(type="radio" name="post_type_selector" value="ADD" aria-label="Add Blog Post." checked) 
+        label.radio-control Edit
+          input(type="radio" name="post_type_selector" value="EDIT" aria-label="Edit Blog Post.") 
+        select(disabled)
+      form#PostForm
         label Post Title *
           input(name="title" aria-label="Title for post" type="text" required)
         label Post Description *
@@ -21,11 +27,11 @@ html(lang="en-GB")
         label Post Categories
           input(name="categories" aria-label="Categories for post" type="text")
         label Id 
-          input(name="id" aria-label="Id for updating existing post" type="text")
+          input(name="id" aria-label="Id for updating existing post" type="text" readonly)
         button(type="submit" aria-label="Submit post") Submit
     article 
       h3 Add Link 
-      form#AddLinkForm
+      form#LinkForm
         label Link Title *
           input(name="title" aria-label="Title for link" type="text" required)
         label Link URL *
