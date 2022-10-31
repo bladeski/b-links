@@ -11,14 +11,16 @@ beforeEach(() => {
 
   const settings = document.createElement('div');
   settings.innerHTML = `
-    <footer>
-      <form id="Preferences" class="hide">
+    <footer class="hide-settings">
+      <form id="Preferences">
         <input type="checkbox" name="showDyslexicStyles" />
         <input type="checkbox" name="showEnhancedStyles" />
+        <input type="range" name="themeColour" />
       </form>
+      <span class="content"></span>
     </footer>
     <template id="SettingsButtonTemplate">
-      <button id="SettingsButton">Settings</button>
+      <button id="SettingsButton" aria-label="Show settings">Settings</button>
     </template>
   `
   document.body.replaceChildren(settings);
@@ -27,7 +29,7 @@ beforeEach(() => {
 describe('Preference service', () => {
   test('the settings button aria text changes on click', () => {
     new PreferenceService();
-    const button = document.querySelector('button');
+    const button = document.querySelector('#SettingsButton') as HTMLButtonElement;
 
     expect(button?.ariaLabel).toContain('Show settings');
 
@@ -42,18 +44,18 @@ describe('Preference service', () => {
 
   test('the preferences form shows on settings click', () => {
     new PreferenceService();
-    const button = document.querySelector('button');
-    const prefs = document.querySelector('#Preferences');
+    const button = document.querySelector('footer button') as HTMLButtonElement;
+    const footer = document.querySelector('footer');
 
-    expect(prefs?.classList).toContain('hide');
-
-    button?.click();
-
-    expect(prefs?.classList).not.toContain('hide');
+    expect(footer?.classList).toContain('hide-settings');
 
     button?.click();
 
-    expect(prefs?.classList).toContain('hide');
+    expect(footer?.classList).not.toContain('hide-settings');
+
+    button?.click();
+
+    expect(footer?.classList).toContain('hide-settings');
   });
 
   test('checking the show dyslexic styles button updates the stylesheet disabled property', () => {
