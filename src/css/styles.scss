@@ -58,12 +58,6 @@ h3 {
   font-size: $font-size-l;
 }
 
-a,
-button,
-label {
-  cursor: pointer;
-}
-
 a[aria-label],
 button[aria-label] {
   position: relative;
@@ -89,6 +83,19 @@ button[aria-label] {
   }
 }
 
+a,
+input,
+button,
+select,
+label {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+}
+
 a {
   color: $link-colour;
 
@@ -101,17 +108,12 @@ a {
   }
 }
 
-button {
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.8;
-  }
-}
-
 label {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  white-space: nowrap;
 
   gap: $padding-small;
 
@@ -134,7 +136,9 @@ select {
 
 input {
   &[type='checkbox'] {
-    transform: scale(1.5);
+    width: 1rem;
+    height: 1rem;
+    margin: 0.25rem;
   }
 
   &[type='radio'] {
@@ -150,7 +154,7 @@ select {
 header,
 nav,
 main,
-footer,
+footer .content,
 #Preferences {
   padding: $padding-small $padding-page-width;
 }
@@ -158,10 +162,6 @@ footer,
 main {
   flex: 1 0 auto;
   overflow: auto;
-
-  article {
-    max-height: 100%;
-  }
 
   button {
     padding: $padding-small $padding-standard;
@@ -173,35 +173,51 @@ main {
 }
 
 footer {
-  display: flex;
   position: relative;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
   margin-top: $padding-large + $padding-small;
-  padding-top: $padding-standard;
-  padding-bottom: $padding-standard;
-
-  background-color: $theme-colour;
 
   color: $background-colour;
   font-size: $font-size-s;
 
-  button {
-    display: flex;
+  transition: margin-top $default-transition;
 
-    border: none;
+  &.hide-settings {
+    margin-top: 0;
 
-    background-color: transparent;
-
-    color: $background-colour;
-    font-size: $font-size-s;
-
-    cursor: pointer;
+    #Preferences {
+      bottom: 0;
+    }
   }
 
-  svg {
-    fill: $background-colour;
+  .content {
+    display: flex;
+    position: relative;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $padding-standard;
+    padding-bottom: $padding-standard;
+
+    background-color: $theme-colour;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 1.5rem;
+
+      background-color: transparent;
+
+      color: $background-colour;
+      font-size: $font-size-s;
+
+      cursor: pointer;
+
+      svg {
+        fill: $background-colour;
+      }
+    }
   }
 }
 
@@ -226,6 +242,15 @@ nav {
   }
 }
 
+blockquote {
+  margin: 0;
+  padding: $padding-small $padding-large;
+
+  border-left: 5px solid $link-colour;
+
+  font-style: italic;
+}
+
 .subhead {
   font-size: 1rem;
   font-weight: 400;
@@ -247,7 +272,7 @@ button,
   &:not(:disabled):focus,
   &:not(:disabled):focus-visible {
     border: $border-width $theme-colour solid;
-    outline: none;
+    // outline: none;
   }
 }
 
@@ -265,28 +290,6 @@ button,
 
   &:visited {
     color: $background-colour;
-  }
-
-  div {
-    position: relative;
-    width: 100%;
-    padding: $padding-small $padding-standard;
-    overflow: hidden;
-
-    border-radius: calc($border-radius - $border-width);
-
-    &:before {
-      position: absolute;
-      top: 0;
-      left: calc(-1 * $padding-large);
-      width: $padding-large;
-      height: 100%;
-
-      background-color: $background-colour;
-
-      content: '';
-      transition: left 200ms ease-in-out;
-    }
   }
 
   &:not(:disabled):hover,
@@ -314,6 +317,28 @@ button,
       left: calc(-1 * $padding-large + $padding-small);
     }
   }
+
+  div {
+    position: relative;
+    width: 100%;
+    padding: $padding-small $padding-standard;
+    overflow: hidden;
+
+    border-radius: calc($border-radius - $border-width);
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: calc(-1 * $padding-large);
+      width: $padding-large;
+      height: 100%;
+
+      background-color: $background-colour;
+
+      content: '';
+      transition: left $default-transition;
+    }
+  }
 }
 
 #Preferences {
@@ -326,11 +351,9 @@ button,
 
   background-color: $primary-font-colour;
 
-  gap: $padding-large;
+  transition: bottom $default-transition;
 
-  &.hide {
-    display: none;
-  }
+  gap: $padding-large;
 }
 
 @media screen and (min-width: 640px) {
@@ -339,7 +362,7 @@ button,
   header,
   nav,
   main,
-  footer,
+  footer .content,
   #Preferences {
     padding: $padding-small $padding-page-width;
   }
@@ -361,7 +384,7 @@ button,
   header,
   nav,
   main,
-  footer,
+  footer .content,
   #Preferences {
     padding: $padding-small $padding-page-width;
   }

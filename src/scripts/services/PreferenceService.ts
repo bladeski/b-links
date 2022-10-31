@@ -3,6 +3,7 @@ export default class PreferenceService {
     showPreferences: false,
     showDyslexicStyles: false,
     showEnhancedStyles: false,
+    themeColour: "314"
   };
 
   private currentPrefs: Preferences;
@@ -13,6 +14,8 @@ export default class PreferenceService {
 
     this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
     this.enableStyles(StylesheetNames.ENHANCED_STYLES, this.currentPrefs.showEnhancedStyles);
+    this.setThemeColour(this.currentPrefs.themeColour);
+    this.toggleThemeColourPickerDisabled(!this.currentPrefs.showEnhancedStyles);
     
     this.setupSettingsButton();
 
@@ -22,7 +25,7 @@ export default class PreferenceService {
   private setupSettingsButton() {
     const settingsButtonTemplate = document.getElementById('SettingsButtonTemplate') as HTMLTemplateElement;
     const content = settingsButtonTemplate.content.cloneNode(true) as HTMLElement;
-    const footer = document.querySelector('footer');
+    const footer = document.querySelector('footer span.content');
     footer?.appendChild(content);
 
     const settingsButton = document.getElementById('SettingsButton') as HTMLButtonElement;
@@ -33,9 +36,13 @@ export default class PreferenceService {
     }
   }
 
-  private updatePref(prefName: keyof Preferences, value: boolean) {
+  private updatePref(prefName: keyof Preferences, value: boolean | string) {
     const prefs = { ...this.currentPrefs };
-    prefs[prefName] = value;
+    if (prefName === 'themeColour' && typeof value === 'string') {
+      prefs[prefName] = value;
+    } else if (prefName !== 'themeColour' && typeof value === 'boolean') {
+      prefs[prefName] = value;
+    }
     this.savePrefs(prefs);
 
     switch (prefName) {
@@ -47,8 +54,13 @@ export default class PreferenceService {
         break;
       case 'showEnhancedStyles':
         this.enableStyles(StylesheetNames.ENHANCED_STYLES, prefs.showEnhancedStyles);
+        this.toggleThemeColourPickerDisabled(!prefs.showEnhancedStyles);
         break;
-    
+      case 'themeColour':
+        if (typeof value === 'string' && !isNaN(parseInt(value))) {
+          this.setThemeColour(value);
+        }
+        
       default:
         break;
     }
@@ -59,8 +71,12 @@ export default class PreferenceService {
       ...this.prefDefaults
     };
     (Object.keys(this.prefDefaults) as (keyof Preferences)[]).forEach((key) => {
-      const value = localStorage.getItem(key)
-      prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key]
+      const value = localStorage.getItem(key);
+      if (key === 'themeColour') {
+        prefs[key] = value || '';
+      } else {
+        prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key];
+      }
     });
   
     return prefs;
@@ -99,6 +115,17 @@ export default class PreferenceService {
         (ev.target as HTMLInputElement)?.checked
       );
     });
+
+    const themeColourPicker = this.preferenceForm?.querySelector(
+      '[name="themeColour"]'
+    ) as HTMLInputElement;
+    themeColourPicker.value = prefs.themeColour;
+    themeColourPicker.addEventListener('input', (ev: Event) => {
+      this.updatePref(
+        'themeColour',
+        (ev.target as HTMLInputElement)?.value
+      );
+    })
   }
 
   private onSettingsClick(ev: MouseEvent) {
@@ -108,10 +135,11 @@ export default class PreferenceService {
   }
 
   private showPreferences(show: boolean) {
+    const footer = document.querySelector('footer');
     if (show) {
-      this.preferenceForm?.classList.remove('hide');
+      footer?.classList.remove('hide-settings');
     } else {
-      this.preferenceForm?.classList.add('hide');
+      footer?.classList.add('hide-settings');
     }
   }
 
@@ -119,6 +147,18 @@ export default class PreferenceService {
     const sheet = document.getElementById(id) as HTMLLinkElement;
     sheet.disabled = !enable;
   }
+
+  private setThemeColour(colour: string) {
+    document.documentElement.style.setProperty('--theme-hue-saturation', `${colour}, 71%`);
+  }
+
+  private toggleThemeColourPickerDisabled(disabled: boolean) {
+    const themeColourPicker = this.preferenceForm?.querySelector(
+      '[name="themeColour"]'
+    ) as HTMLInputElement;
+    themeColourPicker.disabled = disabled;
+  }
+  
 }
 
 export enum StylesheetNames {
@@ -130,4 +170,5 @@ export type Preferences = {
   showPreferences: boolean;
   showDyslexicStyles: boolean;
   showEnhancedStyles: boolean;
+  themeColour: string;
 };
