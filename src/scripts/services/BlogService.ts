@@ -83,7 +83,7 @@ export default class BlogService {
       const title = blogPost.querySelector('.blog-post-title') as HTMLAnchorElement;
 
       if (isSummary) {
-        title.href = `/blog.html?id=${post._id}`;
+        title.href = `./blog.html?id=${post._id}`;
         title.ariaLabel = post.title;
         title.textContent = post.title;
       } else {

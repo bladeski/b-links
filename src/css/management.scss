@@ -5,7 +5,7 @@ body {
     header,
     nav,
     main,
-    footer,
+    footer.content,
     #Preferences {
       padding: $padding-small $padding-large;
     }
@@ -57,6 +57,7 @@ body {
         border-radius: $border-radius;
 
         font-size: 16px;
+        white-space: normal;
       }
 
       button {
