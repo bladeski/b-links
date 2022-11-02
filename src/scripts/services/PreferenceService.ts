@@ -76,10 +76,10 @@ export default class PreferenceService {
 
       switch (key) {
         case 'themeColour':
-          prefs[key] = value || '';
+          prefs[key] = value || this.prefDefaults[key];
           break;
         case 'currentTheme':
-          prefs[key] = value as ThemeOptions;
+          prefs[key] = value ? value as ThemeOptions : this.prefDefaults[key];
           break;
   
         default:
