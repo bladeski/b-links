@@ -106,7 +106,7 @@ describe('Preference service', () => {
     new PreferenceService();
     const selector = document.querySelectorAll(`[name="${settingName}"]`) as NodeListOf<HTMLInputElement>;
 
-    expect(localStorage.getItem(settingName)).toBe('');
+    expect(localStorage.getItem(settingName)).toBe('-');
 
     selector.forEach(node => {      
       node.click();
