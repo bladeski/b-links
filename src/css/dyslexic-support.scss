@@ -2,20 +2,27 @@
   font-family: 'OpenDyslexic';
   font-weight: 400;
 
-  src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2'),
-  url('../fonts/OpenDyslexic-Regular.woff') format('woff');
+  src: url('../fonts/OpenDyslexicThree-Regular.woff2') format('woff2'),
+  url('../fonts/OpenDyslexicThree-Regular.woff') format('woff');
 }
 
 @font-face {
   font-family: 'OpenDyslexic';
   font-weight: 700;
 
-  src: url('../fonts/OpenDyslexic-Bold.woff2') format('woff2'),
-  url('../fonts/OpenDyslexic-Bold.woff') format('woff');
+  src: url('../fonts/OpenDyslexicThree-Bold.woff2') format('woff2'),
+  url('../fonts/OpenDyslexicThree-Bold.woff') format('woff');
 }
 
 body,
+h1,
+h2,
+h3,
 input,
 button {
   font-family: 'OpenDyslexic';
+
+  .subhead {
+    font-family: 'OpenDyslexic';
+  }
 }
