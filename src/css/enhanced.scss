@@ -1,5 +1,7 @@
 @import './vars.scss';
 
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@700;900&display=swap&family=Raleway:ital@0;1&display=swap');
+
 body {
   --theme-hue-saturation: 230, 71%;
   --theme-lightness: 24%;
@@ -42,6 +44,23 @@ body {
     --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
     --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
     --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+  }
+}
+
+body,
+input,
+button,
+select {
+  font-family: 'Raleway', $font-family;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Maven Pro', 'Raleway', $font-family;
+
+  .subhead {
+    font-family: 'Raleway', $font-family;
   }
 }
 

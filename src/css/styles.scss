@@ -17,8 +17,7 @@ body,
 input,
 button,
 select {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-  Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: $font-family;
   font-size: $body-font-size;
   font-weight: 400;
 }
@@ -31,6 +30,8 @@ body {
   background-color: $background-colour;
 
   color: $primary-font-colour;
+  line-height: 1.5;
+  text-align: justify;
 }
 
 h1,
@@ -46,7 +47,7 @@ h3 {
 
 h1 {
   font-size: $font-size-xxl;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 h2 {
@@ -136,6 +137,8 @@ label {
 input,
 textarea,
 select {
+  margin: 0;
+
   border: 1px solid $primary-font-colour;
   border-radius: $border-radius;
 }
