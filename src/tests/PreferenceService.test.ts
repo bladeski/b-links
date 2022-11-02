@@ -16,6 +16,9 @@ beforeEach(() => {
         <input type="checkbox" name="showDyslexicStyles" />
         <input type="checkbox" name="showEnhancedStyles" />
         <input type="range" name="themeColour" />
+        <input type="radio" name="currentTheme" value="dark-mode" />
+        <input type="radio" name="currentTheme" value="light-mode" />
+        <input type="radio" name="currentTheme" value="" min="0" max="360" />
       </form>
       <span class="content"></span>
     </footer>
@@ -27,36 +30,6 @@ beforeEach(() => {
 });
 
 describe('Preference service', () => {
-  test('the settings button aria text changes on click', () => {
-    new PreferenceService();
-    const button = document.querySelector('#SettingsButton') as HTMLButtonElement;
-
-    expect(button?.ariaLabel).toContain('Show settings');
-
-    button?.click();
-
-    expect(button?.ariaLabel).toBe('Hide settings');
-
-    button?.click();
-
-    expect(button?.ariaLabel).toBe('Show settings');
-  });
-
-  test('the preferences form shows on settings click', () => {
-    new PreferenceService();
-    const button = document.querySelector('footer button') as HTMLButtonElement;
-    const footer = document.querySelector('footer');
-
-    expect(footer?.classList).toContain('hide-settings');
-
-    button?.click();
-
-    expect(footer?.classList).not.toContain('hide-settings');
-
-    button?.click();
-
-    expect(footer?.classList).toContain('hide-settings');
-  });
 
   test('checking the show dyslexic styles button updates the stylesheet disabled property', () => {
     new PreferenceService();
@@ -108,6 +81,37 @@ describe('Preference service', () => {
     checkbox?.click();
 
     expect(localStorage.getItem(settingName)).toBe('true');
+  });
+
+  test('changing the theme colour range updates the localStorage settings', () => {
+    const settingName = 'themeColour';
+    localStorage.setItem(settingName, '230');
+    
+    new PreferenceService();
+    const selector = document.querySelector(`[name="${settingName}"]`) as HTMLInputElement;
+
+    expect(localStorage.getItem(settingName)).toBe('230');
+
+    const event = new Event('input');
+    selector.value = '50';
+    selector.dispatchEvent(event);
+    
+    expect(localStorage.getItem(settingName)).toBe('50');
+  });
+
+  test('changing the theme toggle updates the localStorage settings', () => {
+    const settingName = 'currentTheme';
+    localStorage.setItem(settingName, '');
+    
+    new PreferenceService();
+    const selector = document.querySelectorAll(`[name="${settingName}"]`) as NodeListOf<HTMLInputElement>;
+
+    expect(localStorage.getItem(settingName)).toBe('');
+
+    selector.forEach(node => {      
+      node.click();
+      expect(localStorage.getItem(settingName)).toBe(node.value);
+    });
   });
   
 });

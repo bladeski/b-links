@@ -21,24 +21,9 @@ export default class PreferenceService {
     this.toggleEnhancedSettings(this.currentPrefs.showEnhancedStyles);
     
     this.updatePref('showPreferences', true);
-    // this.setupSettingsButton();
 
     this.initialiseForm();
   }
-
-  // private setupSettingsButton() {
-  //   const settingsButtonTemplate = document.getElementById('SettingsButtonTemplate') as HTMLTemplateElement;
-  //   const content = settingsButtonTemplate.content.cloneNode(true) as HTMLElement;
-
-  //   this.preferenceForm?.appendChild(content);
-
-  //   const settingsButton = document.getElementById('SettingsButton') as HTMLButtonElement;
-  //   if (settingsButton) {
-  //     settingsButton.disabled = false;
-  //     settingsButton.ariaLabel = 'Show settings';
-  //     settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
-  //   }
-  // }
 
   private updatePref(prefName: keyof Preferences, value: boolean | string) {
     const prefs = { ...this.currentPrefs };
@@ -166,12 +151,6 @@ export default class PreferenceService {
         (ev.target as HTMLInputElement)?.value
       );
     })
-  }
-
-  private onSettingsClick(ev: MouseEvent) {
-    this.updatePref('showPreferences', !this.currentPrefs.showPreferences);
-    // (ev.currentTarget as HTMLButtonElement).textContent = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} Settings`;
-    (ev.currentTarget as HTMLButtonElement).ariaLabel = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} settings`;
   }
 
   private showPreferences(show: boolean) {
