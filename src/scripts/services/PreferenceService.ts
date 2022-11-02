@@ -206,7 +206,7 @@ export enum StylesheetNames {
 enum ThemeOptions {
   DARK_MODE = 'dark-mode',
   LIGHT_MODE = 'light-mode',
-  NO_PREF = '',
+  NO_PREF = '-',
 };
 
 export type Preferences = {
