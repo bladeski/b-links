@@ -3,7 +3,8 @@ export default class PreferenceService {
     showPreferences: false,
     showDyslexicStyles: false,
     showEnhancedStyles: false,
-    themeColour: "314"
+    currentTheme: ThemeOptions.NO_PREF,
+    themeColour: "230"
   };
 
   private currentPrefs: Preferences;
@@ -15,34 +16,31 @@ export default class PreferenceService {
     this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
     this.enableStyles(StylesheetNames.ENHANCED_STYLES, this.currentPrefs.showEnhancedStyles);
     this.setThemeColour(this.currentPrefs.themeColour);
-    this.toggleThemeColourPickerDisabled(!this.currentPrefs.showEnhancedStyles);
+    this.setTheme(this.currentPrefs.currentTheme);
     
-    this.setupSettingsButton();
+    this.toggleEnhancedSettings(this.currentPrefs.showEnhancedStyles);
+    
+    this.updatePref('showPreferences', true);
 
     this.initialiseForm();
   }
 
-  private setupSettingsButton() {
-    const settingsButtonTemplate = document.getElementById('SettingsButtonTemplate') as HTMLTemplateElement;
-    const content = settingsButtonTemplate.content.cloneNode(true) as HTMLElement;
-    const footer = document.querySelector('footer span.content');
-    footer?.appendChild(content);
-
-    const settingsButton = document.getElementById('SettingsButton') as HTMLButtonElement;
-    if (settingsButton) {
-      settingsButton.disabled = false;
-      settingsButton.ariaLabel = 'Show settings';
-      settingsButton.addEventListener('click', this.onSettingsClick.bind(this));
-    }
-  }
-
   private updatePref(prefName: keyof Preferences, value: boolean | string) {
     const prefs = { ...this.currentPrefs };
-    if (prefName === 'themeColour' && typeof value === 'string') {
-      prefs[prefName] = value;
-    } else if (prefName !== 'themeColour' && typeof value === 'boolean') {
-      prefs[prefName] = value;
+
+    switch (prefName) {
+      case 'themeColour':
+        prefs[prefName] = value.toString();
+        break;
+      case 'currentTheme':
+        prefs[prefName] = value as ThemeOptions;
+        break;
+
+      default:
+        prefs[prefName] = !!value;
+        break;
     }
+
     this.savePrefs(prefs);
 
     switch (prefName) {
@@ -54,7 +52,10 @@ export default class PreferenceService {
         break;
       case 'showEnhancedStyles':
         this.enableStyles(StylesheetNames.ENHANCED_STYLES, prefs.showEnhancedStyles);
-        this.toggleThemeColourPickerDisabled(!prefs.showEnhancedStyles);
+        this.toggleEnhancedSettings(prefs.showEnhancedStyles);
+        break;
+      case 'currentTheme':
+        this.setTheme(prefs.currentTheme);
         break;
       case 'themeColour':
         if (typeof value === 'string' && !isNaN(parseInt(value))) {
@@ -72,10 +73,18 @@ export default class PreferenceService {
     };
     (Object.keys(this.prefDefaults) as (keyof Preferences)[]).forEach((key) => {
       const value = localStorage.getItem(key);
-      if (key === 'themeColour') {
-        prefs[key] = value || '';
-      } else {
-        prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key];
+
+      switch (key) {
+        case 'themeColour':
+          prefs[key] = value || '';
+          break;
+        case 'currentTheme':
+          prefs[key] = value as ThemeOptions;
+          break;
+  
+        default:
+          prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key];
+          break;
       }
     });
   
@@ -116,6 +125,22 @@ export default class PreferenceService {
       );
     });
 
+    const themeSelector = this.preferenceForm?.querySelectorAll(
+      '[name="currentTheme"]'
+    ) as NodeListOf<HTMLInputElement>;
+    themeSelector.forEach(node => {
+      if (node.value === prefs.currentTheme) {
+        node.checked = true;
+      }
+      node.addEventListener('change', (ev: Event) => {
+        this.updatePref(
+          'currentTheme',
+          (ev.target as HTMLInputElement)?.value
+        );
+      });
+    });
+    
+
     const themeColourPicker = this.preferenceForm?.querySelector(
       '[name="themeColour"]'
     ) as HTMLInputElement;
@@ -126,12 +151,6 @@ export default class PreferenceService {
         (ev.target as HTMLInputElement)?.value
       );
     })
-  }
-
-  private onSettingsClick(ev: MouseEvent) {
-    this.updatePref('showPreferences', !this.currentPrefs.showPreferences);
-    // (ev.currentTarget as HTMLButtonElement).textContent = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} Settings`;
-    (ev.currentTarget as HTMLButtonElement).ariaLabel = `${this.currentPrefs.showPreferences ? 'Hide' : 'Show'} settings`;
   }
 
   private showPreferences(show: boolean) {
@@ -149,14 +168,32 @@ export default class PreferenceService {
   }
 
   private setThemeColour(colour: string) {
-    document.documentElement.style.setProperty('--theme-hue-saturation', `${colour}, 71%`);
+    document.body.style.setProperty('--theme-hue-saturation', `${colour}, 71%`);
   }
 
-  private toggleThemeColourPickerDisabled(disabled: boolean) {
+  private toggleEnhancedSettings(show: boolean) {
+    const toggleDarkMode = this.preferenceForm?.querySelectorAll(
+      '[name="currentTheme"]'
+    ) as NodeListOf<HTMLInputElement>;
+    toggleDarkMode.forEach(node => node.disabled = !show);
+
     const themeColourPicker = this.preferenceForm?.querySelector(
       '[name="themeColour"]'
     ) as HTMLInputElement;
-    themeColourPicker.disabled = disabled;
+    themeColourPicker.disabled = !show;
+  }
+
+  private setTheme(theme: ThemeOptions) {
+    if (theme === ThemeOptions.DARK_MODE) {
+      document.body.classList.remove(ThemeOptions.LIGHT_MODE);
+      document.body.classList.add(ThemeOptions.DARK_MODE);
+    } else if (theme === ThemeOptions.LIGHT_MODE) {
+      document.body.classList.remove(ThemeOptions.DARK_MODE);
+      document.body.classList.add(ThemeOptions.LIGHT_MODE);
+    } else {
+      document.body.classList.remove(ThemeOptions.LIGHT_MODE);
+      document.body.classList.remove(ThemeOptions.DARK_MODE);
+    }
   }
   
 }
@@ -166,9 +203,16 @@ export enum StylesheetNames {
   ENHANCED_STYLES = 'EnhancedStyles',
 };
 
+enum ThemeOptions {
+  DARK_MODE = 'dark-mode',
+  LIGHT_MODE = 'light-mode',
+  NO_PREF = '',
+};
+
 export type Preferences = {
   showPreferences: boolean;
   showDyslexicStyles: boolean;
   showEnhancedStyles: boolean;
+  currentTheme: ThemeOptions;
   themeColour: string;
 };

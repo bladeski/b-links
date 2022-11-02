@@ -1,7 +1,7 @@
 @import './vars.scss';
 
-:root {
-  --theme-hue-saturation: 314, 71%;
+body {
+  --theme-hue-saturation: 230, 71%;
   --theme-lightness: 24%;
   --theme-color: hsl(var(--theme-hue-saturation), var(--theme-lightness));
   --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 8%));
@@ -10,6 +10,39 @@
   --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 74%));
   --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 70%));
   --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 16%));
+
+  @media (prefers-color-scheme: dark) {
+    --theme-lightness: 76%;
+    --theme-color: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+    --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 8%));
+    --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 20%));
+    --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 10%));
+    --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
+    --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
+    --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+
+    &.light-mode {
+      --theme-lightness: 24%;
+      --theme-color: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+      --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 8%));
+      --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 20%));
+      --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 10%));
+      --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 74%));
+      --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 70%));
+      --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 16%));
+    }
+  }
+
+  &.dark-mode {
+    --theme-lightness: 76%;
+    --theme-color: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+    --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 8%));
+    --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 20%));
+    --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 10%));
+    --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
+    --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
+    --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+  }
 }
 
 body {
@@ -24,6 +57,17 @@ body {
 
   -ms-grid-rows: auto;
   accent-color: var(--theme-color);
+
+  &.dark-mode {
+    --theme-lightness: 76%;
+    --theme-color: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+    --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 8%));
+    --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 20%));
+    --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 10%));
+    --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
+    --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
+    --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+  }
 
   a[aria-label],
   button[aria-label] {
@@ -241,16 +285,16 @@ body {
 
     color: var(--background-colour);
 
-    button {
-      color: var(--background-colour);
-    }
-
-    svg {
-      fill: var(--background-colour);
-    }
-
     .content {
       background-color: var(--theme-color);
+
+      button {
+        color: var(--background-colour);
+
+        svg {
+          fill: var(--background-colour);
+        }
+      }
     }
   }
 

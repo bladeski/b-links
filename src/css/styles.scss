@@ -85,6 +85,7 @@ button[aria-label] {
 
 a,
 input,
+textarea,
 button,
 select,
 label {
@@ -94,6 +95,11 @@ label {
     cursor: not-allowed;
     opacity: 0.75;
   }
+}
+
+input[type='text'],
+textarea {
+  cursor: text;
 }
 
 a {
@@ -174,7 +180,6 @@ main {
 
 footer {
   position: relative;
-  margin-top: $padding-large + $padding-small;
 
   color: $background-colour;
   font-size: $font-size-s;
@@ -182,10 +187,8 @@ footer {
   transition: margin-top $default-transition;
 
   &.hide-settings {
-    margin-top: 0;
-
     #Preferences {
-      bottom: 0;
+      display: none;
     }
   }
 
@@ -218,6 +221,14 @@ footer {
         fill: $background-colour;
       }
     }
+  }
+
+  .theme-picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: $padding-standard;
   }
 }
 
@@ -343,17 +354,19 @@ button,
 
 #Preferences {
   display: flex;
-  position: absolute;
-  bottom: 100%;
-  left: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
   width: 100%;
   margin: 0;
+  column-gap: $padding-large;
 
   background-color: $primary-font-colour;
 
-  transition: bottom $default-transition;
+  row-gap: $padding-standard;
+}
 
-  gap: $padding-large;
+#SettingsButton {
+  display: none;
 }
 
 @media screen and (min-width: 640px) {
