@@ -53,7 +53,7 @@ body {
         padding: $padding-small;
         overflow: auto;
 
-        border: 1px solid $primary-font-colour;
+        border: 1px solid var(--primary-font-colour);
         border-radius: $border-radius;
 
         font-size: 16px;

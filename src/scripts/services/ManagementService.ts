@@ -80,6 +80,8 @@ export default class ManagementService {
     };
     ApiService.addBlogPost(post, id).then(() => {
       this.postForm?.reset();
+      const preview = document.getElementById('PostPreview') as HTMLElement;
+      preview.innerHTML = '';
     });
   }
 
