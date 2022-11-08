@@ -1,4 +1,4 @@
-import { BlogPost, Link } from '../models';
+import { BlogPostModel, LinkModel } from '../models';
 
 import ApiService from './ApiService';
 import DOMPurify from 'dompurify';
@@ -13,7 +13,7 @@ export default class ManagementService {
   private postTypeForm: HTMLFormElement | null;
   private postForm: HTMLFormElement | null;
   private linkForm: HTMLFormElement | null;
-  private blogPosts: BlogPost[] = [];
+  private blogPosts: BlogPostModel[] = [];
   private blogFormType: FormType = FormType.ADD;
 
   constructor() {
@@ -72,7 +72,7 @@ export default class ManagementService {
       this.blogFormType === FormType.EDIT
         ? formData.get('id')?.toString()
         : undefined;
-    const post: BlogPost = {
+    const post: BlogPostModel = {
       title: formData.get('title')?.toString() || '',
       description: formData.get('description')?.toString() || '',
       post: formData.get('post')?.toString() || '',
@@ -88,7 +88,7 @@ export default class ManagementService {
   private onSubmitLinkForm(event: SubmitEvent) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const link: Link = {
+    const link: LinkModel = {
       title: formData.get('title')?.toString() || '',
       url: formData.get('url')?.toString() || '',
       categories: formData.get('categories')?.toString().split(' ') || [],
@@ -108,7 +108,7 @@ export default class ManagementService {
     preview.innerHTML = `${markdown}`;
   }
 
-  private onGetBlogPosts(posts: BlogPost[]) {
+  private onGetBlogPosts(posts: BlogPostModel[]) {
     this.blogPosts = posts;
     const selectElement = this.postTypeForm?.querySelector('select');
     posts.forEach((post) => {

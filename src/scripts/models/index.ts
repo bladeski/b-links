@@ -1,4 +1,8 @@
-import { BlogPost } from './BlogPost.model';
-import { Link } from './Link.model';
+import { EventLogModel, EventLogType } from './EventLog.model';
 
-export type { BlogPost, Link };
+import { BlogPostModel } from './BlogPost.model';
+import { LinkModel } from './Link.model';
+import { NotificationModel } from './Notification.model';
+
+export type { BlogPostModel, LinkModel, NotificationModel, EventLogModel };
+export { EventLogType };

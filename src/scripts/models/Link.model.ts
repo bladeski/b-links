@@ -1,4 +1,4 @@
-export type Link = {
+export type LinkModel = {
   _id?: string;
   title: string;
   url: string;
@@ -8,7 +8,7 @@ export type Link = {
   token?: string;
 };
 
-export type LinkGroup = {
+export type LinkGroupModel = {
   category: string;
-  links: Link[];
+  links: LinkModel[];
 }
