@@ -18,7 +18,7 @@ beforeEach(() => {
         <input type="range" name="themeColour" />
         <input type="radio" name="currentTheme" value="dark-mode" />
         <input type="radio" name="currentTheme" value="light-mode" />
-        <input type="radio" name="currentTheme" value="" min="0" max="360" />
+        <input type="radio" name="currentTheme" value="-" min="0" max="360" />
       </form>
       <span class="content"></span>
     </footer>

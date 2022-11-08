@@ -1,3 +1,6 @@
+import { EventLogType } from './../models/EventLog.model';
+import { LoggingService } from './LoggingService';
+
 export default class PreferenceService {
   prefDefaults: Preferences = {
     showPreferences: false,
@@ -72,14 +75,14 @@ export default class PreferenceService {
       ...this.prefDefaults
     };
     (Object.keys(this.prefDefaults) as (keyof Preferences)[]).forEach((key) => {
-      const value = localStorage.getItem(key);
+      const value = localStorage.getItem(key) || '';
 
       switch (key) {
         case 'themeColour':
-          prefs[key] = value || this.prefDefaults[key];
+          prefs[key] = value;
           break;
-        case 'currentTheme':
-          prefs[key] = value ? value as ThemeOptions : this.prefDefaults[key];
+        case 'currentTheme':       
+          prefs[key] = value as ThemeOptions;
           break;
   
         default:
@@ -88,16 +91,17 @@ export default class PreferenceService {
       }
     });
   
-    return prefs;
+    return this.sanitisePrefs(prefs);
   }
 
   private savePrefs(prefs: Preferences) {
-    (Object.keys(prefs) as (keyof Preferences)[]).forEach(key => {
+    const sanitisedPrefs = this.sanitisePrefs(prefs);
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(key => {
       if (key !== 'showPreferences') {
-        localStorage.setItem(key, `${prefs[key]}`);
+        localStorage.setItem(key, `${sanitisedPrefs[key]}`);
       }
     });
-    this.currentPrefs = prefs;
+    this.currentPrefs = sanitisedPrefs;
   }
 
   private initialiseForm() {
@@ -165,6 +169,57 @@ export default class PreferenceService {
   private enableStyles(id: string, enable: boolean) {
     const sheet = document.getElementById(id) as HTMLLinkElement;
     sheet.disabled = !enable;
+  }
+
+  private sanitisePrefs(prefs: Preferences): Preferences {
+    const sanitisedPrefs = {...this.prefDefaults};
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(pref => {
+      switch (pref) {
+        case 'themeColour':
+          sanitisedPrefs[pref] = this.sanitiseThemeColour(prefs[pref]);
+          break;
+        case 'currentTheme':
+          sanitisedPrefs[pref] = this.sanitiseThemeName(prefs[pref]);
+          break;
+        
+        default:
+          sanitisedPrefs[pref] = this.sanitiseOther(pref, prefs[pref]);
+          break;
+      }
+    });
+
+    return sanitisedPrefs;
+  }
+
+  private sanitiseThemeColour(colour: string | null): string {
+    const colourValue = parseInt(colour || this.prefDefaults.themeColour) % 360;
+    if (isNaN(colourValue)) {
+      LoggingService.logInvalidSettingEvent('themeColour', colour || '');
+      return this.prefDefaults.themeColour;
+    }
+    return `${colourValue < 0 ? 360 - colourValue : colourValue}`;
+  }
+
+  private sanitiseThemeName(theme: string | null): ThemeOptions {
+    switch (theme) {
+      case ThemeOptions.DARK_MODE:
+      case ThemeOptions.LIGHT_MODE:
+      case ThemeOptions.NO_PREF:
+        return theme;
+    
+      default:
+        LoggingService.logInvalidSettingEvent('currentTheme', theme || '');
+        return ThemeOptions.NO_PREF;
+    }
+  }
+
+  private sanitiseOther(key: keyof Preferences, value: boolean): boolean {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    LoggingService.logInvalidSettingEvent(key, value);
+    return !!this.prefDefaults[key];
   }
 
   private setThemeColour(colour: string) {

@@ -52,12 +52,14 @@ input,
 button,
 select {
   font-family: 'Raleway', $font-family;
+  letter-spacing: 1px;
 }
 
 h1,
 h2,
 h3 {
   font-family: 'Maven Pro', 'Raleway', $font-family;
+  letter-spacing: normal;
 
   .subhead {
     font-family: 'Raleway', $font-family;

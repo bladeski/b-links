@@ -372,6 +372,106 @@ button,
   display: none;
 }
 
+#Notifications {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: $padding-standard;
+
+  gap: $padding-small;
+
+  dialog {
+    position: relative;
+    width: 50vw;
+    max-width: 450px;
+    margin: 0;
+    padding: 0;
+
+    border: 1px solid;
+    border-radius: $border-radius;
+
+    background-color: transparent;
+
+    &.info {
+      border-color: $info-colour;
+
+      summary {
+        background-color: $info-colour-background;
+      }
+    }
+
+    &.log {
+      border-color: $success-colour;
+
+      summary {
+        background-color: $success-colour-background;
+      }
+    }
+
+    &.warn {
+      border-color: $warning-colour;
+
+      summary {
+        background-color: $warning-colour-background;
+      }
+    }
+
+    &.error {
+      border-color: $danger-colour;
+
+      summary {
+        background-color: $danger-colour-background;
+      }
+    }
+
+    .close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.5rem;
+
+      border: none;
+
+      background: none;
+
+      font-size: $font-size-s;
+      line-height: $font-size-regular;
+    }
+  }
+
+  details {
+    font-size: $font-size-s;
+
+    opacity: 0.5;
+    transition: opacity $default-transition;
+
+    &[open],
+    &:hover {
+      opacity: 1;
+    }
+
+    summary {
+      padding: $padding-small $padding-standard;
+      padding-right: 2rem;
+      overflow: hidden;
+
+      line-height: $font-size-regular;
+      list-style-type: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      cursor: pointer;
+    }
+
+    .description {
+      padding: $padding-small $padding-standard;
+    }
+  }
+}
+
 @media screen and (min-width: 640px) {
   $padding-page-width: 10vw;
 

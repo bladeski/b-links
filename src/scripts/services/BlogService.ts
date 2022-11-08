@@ -1,9 +1,13 @@
+import { BlogPostModel, EventLogType } from '../models';
+
 import ApiService from './ApiService';
-import { BlogPost } from '../models';
 import DOMPurify from 'dompurify';
+import { LoggingService } from './LoggingService';
 import { marked } from 'marked';
 
 export default class BlogService {
+  postId: string | null;
+
   constructor() {
     const main = document.querySelector('main');
     const heading = document.createElement('h2');
@@ -15,26 +19,13 @@ export default class BlogService {
     heading.appendChild(subhead);
     main?.appendChild(heading);
 
-    const postId = this.processSearchParams();
-    this.getBlogFromLocal()
-      .then(this.processBlogPosts.bind(this))
-      .then((posts) => {
-        if (postId) {
-          this.renderBlogPost(posts, postId);
-        } else {
-          this.renderBlogList(posts);
-        }
-      })
-      .then(ApiService.getBlogPosts)
-      .then(this.saveBlogToLocal.bind(this))
-      .then(this.processBlogPosts.bind(this))
-      .then((posts) => {
-        if (postId) {
-          this.renderBlogPost(posts, postId);
-        } else {
-          this.renderBlogList(posts);
-        }
-      });
+    this.postId = this.processSearchParams();
+
+    if (this.postId) {
+      this.renderBlogPost(this.postId)
+    } else {
+      this.getAndRenderList()
+    }
   }
 
   private processSearchParams(): string | null {
@@ -42,18 +33,27 @@ export default class BlogService {
     return searchParams.get('id');
   }
 
-  private renderBlogPost(posts: BlogPost[], postId: string) {
-    const selectedPost = posts.find((post) => post._id === postId);
-
-    if (selectedPost) {
-      const main = document.querySelector('main');
-      main?.replaceChildren(this.createBlogPostElement(selectedPost, false));
-    } else {
-      this.renderBlogList(posts);
+  private renderBlogPost(postId: string) {
+    if (postId) {
+      ApiService.getBlogPost(postId).then(selectedPost => {
+        const main = document.querySelector('main');
+        main?.replaceChildren(
+          this.createBlogPostElement(
+            this.processBlogPost(selectedPost), false
+          )
+        );
+      })
+      .catch(() => {
+        this.getAndRenderList();
+        if (history.pushState) {
+          const url = `${window.location.origin}${window.location.pathname}`;
+          history.pushState({ path: url }, '', url);
+        }
+      });
     }
   }
 
-  private renderBlogList(posts: BlogPost[]) {
+  private renderBlogList(posts: BlogPostModel[]) {
     const main = document.querySelector('main');
 
     const postEls: HTMLElement[] = posts.map(
@@ -64,11 +64,11 @@ export default class BlogService {
     main?.append(...postEls);
   }
 
-  private createBlogPostSummaryElement(post: BlogPost): HTMLElement {
+  private createBlogPostSummaryElement(post: BlogPostModel): HTMLElement {
     return this.createBlogPostElement(post, true);
   }
 
-  private createBlogPostElement(post: BlogPost, isSummary = true): HTMLElement {
+  private createBlogPostElement(post: BlogPostModel, isSummary = true): HTMLElement {
     const template = document.getElementById(
       isSummary ? 'BlogPostListTemplate' : 'BlogPostTemplate'
     ) as HTMLTemplateElement;
@@ -110,27 +110,41 @@ export default class BlogService {
     return document.createElement('div');
   }
 
-  private getBlogFromLocal(): Promise<BlogPost[]> {
+  private getBlogFromLocal(): Promise<BlogPostModel[]> {
     return new Promise((res, rej) => {
       const posts = localStorage.getItem('blogPosts') || '[]';
       res(JSON.parse(posts));
     });
   }
 
-  private saveBlogToLocal(posts: BlogPost[]): Promise<BlogPost[]> {
+  private saveBlogToLocal(posts: BlogPostModel[]): Promise<BlogPostModel[]> {
     localStorage.setItem('blogPosts', JSON.stringify(posts));
     return Promise.resolve(posts);
   }
 
-  private processBlogPosts(posts: BlogPost[]): Promise<BlogPost[]> {
+  private processBlogPosts(posts: BlogPostModel[]): Promise<BlogPostModel[]> {
     return Promise.resolve(
       posts
-        .map((post) => ({
-          ...post,
-          createdAt: new Date(post.createdAt || ''),
-          updatedAt: new Date(post.updatedAt || ''),
-        }))
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .map(this.processBlogPost)
+        .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
     );
+  }
+
+  private processBlogPost(post: BlogPostModel): BlogPostModel {
+    return {
+      ...post,
+      createdAt: new Date(post.createdAt || ''),
+      updatedAt: new Date(post.updatedAt || ''),
+    };
+  }
+
+  private getAndRenderList() {
+    this.getBlogFromLocal()
+      .then(this.processBlogPosts.bind(this))
+      .then(this.renderBlogList.bind(this))
+      .then(() => ApiService.getBlogPosts())
+      .then(this.saveBlogToLocal.bind(this))
+      .then(this.processBlogPosts.bind(this))
+      .then(this.renderBlogList.bind(this));
   }
 }

@@ -1,6 +1,6 @@
 import ApiService from './ApiService';
-import { Link } from '../models';
-import { LinkGroup } from '../models/Link.model';
+import { LinkGroupModel } from '../models/Link.model';
+import { LinkModel } from '../models';
 
 export default class LinkService {
   constructor() {  
@@ -17,7 +17,7 @@ export default class LinkService {
       });
   }
   
-  private renderLinks(links: Link[]) {
+  private renderLinks(links: LinkModel[]) {
     const main = document.querySelector('main');
     main?.querySelectorAll('section').forEach((node) => node.remove());
 
@@ -38,7 +38,7 @@ export default class LinkService {
     });  
   }
   
-  private createLinkElement(link: Link): HTMLElement {
+  private createLinkElement(link: LinkModel): HTMLElement {
     const item = document.createElement('li');
     item.id = `link_${link._id}`;
 
@@ -53,19 +53,19 @@ export default class LinkService {
     return item;
   }
   
-  private getLinksFromLocal(): Promise<Link[]> {
+  private getLinksFromLocal(): Promise<LinkModel[]> {
     return new Promise((res, rej) => {
       const links = localStorage.getItem('links') || '[]';
       res(JSON.parse(links));
     });
   }
   
-  private saveLinksToLocal(links: Link[]): Promise<Link[]> {
+  private saveLinksToLocal(links: LinkModel[]): Promise<LinkModel[]> {
     localStorage.setItem('links', JSON.stringify(links));
     return Promise.resolve(links);
   }
   
-  private processLinks(links: Link[]): Promise<Link[]> {
+  private processLinks(links: LinkModel[]): Promise<LinkModel[]> {
     return Promise.resolve(
       links
         .map((link) => ({
@@ -77,16 +77,16 @@ export default class LinkService {
     );
   }
 
-  private getCategories(links: Link[]): string[] {
+  private getCategories(links: LinkModel[]): string[] {
     const categories: string[] = [];
 
     links.forEach(link => categories.push(...link.categories || ''));
     return Array.from(new Set(categories));
   }
 
-  private getLinkGroups(links: Link[]): LinkGroup[] {
+  private getLinkGroups(links: LinkModel[]): LinkGroupModel[] {
     const categories = this.getCategories(links);
-    const linkGroups: LinkGroup[] = [];
+    const linkGroups: LinkGroupModel[] = [];
     categories.forEach(category => {
       linkGroups.push({
         category,
