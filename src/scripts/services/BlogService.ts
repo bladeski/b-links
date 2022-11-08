@@ -1,8 +1,6 @@
-import { BlogPostModel, EventLogType } from '../models';
-
 import ApiService from './ApiService';
+import { BlogPostModel } from '../models';
 import DOMPurify from 'dompurify';
-import { LoggingService } from './LoggingService';
 import { marked } from 'marked';
 
 export default class BlogService {
