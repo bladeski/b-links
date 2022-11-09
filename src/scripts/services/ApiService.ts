@@ -25,13 +25,13 @@ export default class ApiService {
         `${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}`
       )
       .then(this.getResponseJson)
-        .then((result) => res(result))
-        .catch(err => this.logError(
-          'Unable to get blog posts.',
-          'We had a technical issue trying to get the blog posts. Please try again.',
-          err,
-          rej
-        ));
+      .then((result) => res(result))
+      .catch(err => this.logError(
+        'Unable to get blog posts.',
+        'We had a technical issue trying to get the blog posts. Please try again.',
+        err,
+        rej
+      ));
     });
   }
   static addBlogPost(post: BlogPostModel, id?: string): Promise<BlogPostModel> {
@@ -51,13 +51,13 @@ export default class ApiService {
         }
       )
       .then(this.getResponseJson)
-        .then((result) => res(result))
-        .catch(err => this.logError(
-          'Unable to add blog posts.',
-          'We had a technical issue trying to save the blog posts. Please try again.',
-          err,
-          rej
-        ));
+      .then((result) => res(result))
+      .catch(err => this.logError(
+        'Unable to add blog posts.',
+        'We had a technical issue trying to save the blog posts. Please try again.',
+        err,
+        rej
+      ));
     });
   }
   static getLinks(): Promise<LinkModel[]> {
@@ -66,13 +66,13 @@ export default class ApiService {
         `${process.env.API_URL}link?code=${process.env.API_LINK_KEY}`
       )
       .then(this.getResponseJson)
-        .then((result) => res(result))
-        .catch(err => this.logError(
-          'Unable to get links.',
-          'We had a technical issue trying to get the links. Please try again.',
-          err,
-          rej
-        ));
+      .then((result) => res(result))
+      .catch(err => this.logError(
+        'Unable to get links.',
+        'We had a technical issue trying to get the links. Please try again.',
+        err,
+        rej
+      ));
     });
   }
   static addLink(link: LinkModel): Promise<LinkModel> {

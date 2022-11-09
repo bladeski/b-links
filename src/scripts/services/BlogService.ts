@@ -1,6 +1,9 @@
+import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+
 import ApiService from './ApiService';
 import { BlogPostModel } from '../models';
 import DOMPurify from 'dompurify';
+import LoaderService from './LoaderService';
 import { marked } from 'marked';
 
 export default class BlogService {
@@ -20,9 +23,9 @@ export default class BlogService {
     this.postId = this.processSearchParams();
 
     if (this.postId) {
-      this.renderBlogPost(this.postId)
+      this.renderBlogPost(this.postId);
     } else {
-      this.getAndRenderList()
+      this.getAndRenderList();
     }
   }
 
@@ -32,22 +35,34 @@ export default class BlogService {
   }
 
   private renderBlogPost(postId: string) {
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.BLOG_POST,
+      id: postId,
+      description: 'Blog post',
+      isLoading: true
+    }
+    LoaderService.setLoadItemState(loaderItem);
     if (postId) {
-      ApiService.getBlogPost(postId).then(selectedPost => {
-        const main = document.querySelector('main');
-        main?.replaceChildren(
-          this.createBlogPostElement(
-            this.processBlogPost(selectedPost), false
-          )
-        );
-      })
-      .catch(() => {
-        this.getAndRenderList();
-        if (history.pushState) {
-          const url = `${window.location.origin}${window.location.pathname}`;
-          history.pushState({ path: url }, '', url);
-        }
-      });
+      loaderItem.isLoading = false;
+      ApiService.getBlogPost(postId)
+        .then((selectedPost) => {
+          const main = document.querySelector('main');
+          main?.replaceChildren(
+            this.createBlogPostElement(
+              this.processBlogPost(selectedPost),
+              false
+            )
+          );
+          LoaderService.setLoadItemState(loaderItem);
+        })
+        .catch(() => {
+          this.getAndRenderList();
+          if (history.pushState) {
+            const url = `${window.location.origin}${window.location.pathname}`;
+            history.pushState({ path: url }, '', url);
+          }
+          LoaderService.setLoadItemState(loaderItem);
+        });
     }
   }
 
@@ -66,7 +81,10 @@ export default class BlogService {
     return this.createBlogPostElement(post, true);
   }
 
-  private createBlogPostElement(post: BlogPostModel, isSummary = true): HTMLElement {
+  private createBlogPostElement(
+    post: BlogPostModel,
+    isSummary = true
+  ): HTMLElement {
     const template = document.getElementById(
       isSummary ? 'BlogPostListTemplate' : 'BlogPostTemplate'
     ) as HTMLTemplateElement;
@@ -78,7 +96,9 @@ export default class BlogService {
       const blogPost = clone.querySelector('.blog-post') as HTMLElement;
       blogPost.id = `blog-post_${post._id}`;
 
-      const title = blogPost.querySelector('.blog-post-title') as HTMLAnchorElement;
+      const title = blogPost.querySelector(
+        '.blog-post-title'
+      ) as HTMLAnchorElement;
 
       if (isSummary) {
         title.href = `./blog.html?id=${post._id}`;
@@ -124,7 +144,10 @@ export default class BlogService {
     return Promise.resolve(
       posts
         .map(this.processBlogPost)
-        .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
+        .sort(
+          (a, b) =>
+            (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
+        )
     );
   }
 
@@ -137,9 +160,19 @@ export default class BlogService {
   }
 
   private getAndRenderList() {
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.BLOG_LIST,
+      description: 'Blog list',
+      isLoading: true
+    };
+    LoaderService.setLoadItemState(loaderItem);
     this.getBlogFromLocal()
       .then(this.processBlogPosts.bind(this))
       .then(this.renderBlogList.bind(this))
+      .then(() => {
+        loaderItem.isLoading = false;
+        LoaderService.setLoadItemState(loaderItem)
+      })
       .then(() => ApiService.getBlogPosts())
       .then(this.saveBlogToLocal.bind(this))
       .then(this.processBlogPosts.bind(this))

@@ -9,7 +9,7 @@ export default class LinkService {
       .then((posts) => {
         this.renderLinks(posts);
       })
-      .then(ApiService.getLinks)
+      .then(() => ApiService.getLinks())
       .then(this.saveLinksToLocal.bind(this))
       .then(this.processLinks.bind(this))
       .then((posts) => {

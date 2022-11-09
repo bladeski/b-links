@@ -1,4 +1,6 @@
-import { EventLogType } from './../models/EventLog.model';
+import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+
+import LoaderService from './LoaderService';
 import { LoggingService } from './LoggingService';
 
 export default class PreferenceService {
@@ -7,25 +9,49 @@ export default class PreferenceService {
     showDyslexicStyles: false,
     showEnhancedStyles: false,
     currentTheme: ThemeOptions.NO_PREF,
-    themeColour: "230"
+    themeColour: '230',
   };
 
   private currentPrefs: Preferences;
   private preferenceForm = document.forms.namedItem('Preferences');
+  private loadedStylesheets: string[] = [];
 
   constructor() {
     this.currentPrefs = this.getPrefs();
 
-    this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
-    this.enableStyles(StylesheetNames.ENHANCED_STYLES, this.currentPrefs.showEnhancedStyles);
+    this.enableStyles(
+      StylesheetNames.DYSLEXIC_STYLES,
+      this.currentPrefs.showDyslexicStyles
+    );
+    this.enableStyles(
+      StylesheetNames.ENHANCED_STYLES,
+      this.currentPrefs.showEnhancedStyles
+    );
     this.setThemeColour(this.currentPrefs.themeColour);
     this.setTheme(this.currentPrefs.currentTheme);
-    
+
     this.toggleEnhancedSettings(this.currentPrefs.showEnhancedStyles);
-    
+
     this.updatePref('showPreferences', true);
 
     this.initialiseForm();
+
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.FONTS,
+      description: 'Fonts',
+      isLoading: true
+    };
+
+    if (document.fonts) {
+      document.fonts.onloading = () => {
+        loaderItem.isLoading = true;
+        LoaderService.setLoadItemState(loaderItem);
+      }
+      document.fonts.onloadingdone = () => {
+        loaderItem.isLoading = false;
+        LoaderService.setLoadItemState(loaderItem);
+      }
+    }
   }
 
   private updatePref(prefName: keyof Preferences, value: boolean | string) {
@@ -51,10 +77,16 @@ export default class PreferenceService {
         this.showPreferences(prefs.showPreferences);
         break;
       case 'showDyslexicStyles':
-        this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, prefs.showDyslexicStyles);
+        this.enableStyles(
+          StylesheetNames.DYSLEXIC_STYLES,
+          prefs.showDyslexicStyles
+        );
         break;
       case 'showEnhancedStyles':
-        this.enableStyles(StylesheetNames.ENHANCED_STYLES, prefs.showEnhancedStyles);
+        this.enableStyles(
+          StylesheetNames.ENHANCED_STYLES,
+          prefs.showEnhancedStyles
+        );
         this.toggleEnhancedSettings(prefs.showEnhancedStyles);
         break;
       case 'currentTheme':
@@ -64,7 +96,7 @@ export default class PreferenceService {
         if (typeof value === 'string' && !isNaN(parseInt(value))) {
           this.setThemeColour(value);
         }
-        
+
       default:
         break;
     }
@@ -72,7 +104,7 @@ export default class PreferenceService {
 
   private getPrefs(): Preferences {
     const prefs: Preferences = {
-      ...this.prefDefaults
+      ...this.prefDefaults,
     };
     (Object.keys(this.prefDefaults) as (keyof Preferences)[]).forEach((key) => {
       const value = localStorage.getItem(key) || '';
@@ -81,22 +113,23 @@ export default class PreferenceService {
         case 'themeColour':
           prefs[key] = value;
           break;
-        case 'currentTheme':       
+        case 'currentTheme':
           prefs[key] = value as ThemeOptions;
           break;
-  
+
         default:
-          prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key];
+          prefs[key] =
+            value !== null ? value === 'true' : this.prefDefaults[key];
           break;
       }
     });
-  
+
     return this.sanitisePrefs(prefs);
   }
 
   private savePrefs(prefs: Preferences) {
     const sanitisedPrefs = this.sanitisePrefs(prefs);
-    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(key => {
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((key) => {
       if (key !== 'showPreferences') {
         localStorage.setItem(key, `${sanitisedPrefs[key]}`);
       }
@@ -106,7 +139,7 @@ export default class PreferenceService {
 
   private initialiseForm() {
     const prefs = this.getPrefs();
-    
+
     const dyslexicStyleSelector = this.preferenceForm?.querySelector(
       '[name="showDyslexicStyles"]'
     ) as HTMLInputElement;
@@ -132,29 +165,22 @@ export default class PreferenceService {
     const themeSelector = this.preferenceForm?.querySelectorAll(
       '[name="currentTheme"]'
     ) as NodeListOf<HTMLInputElement>;
-    themeSelector.forEach(node => {
+    themeSelector.forEach((node) => {
       if (node.value === prefs.currentTheme) {
         node.checked = true;
       }
       node.addEventListener('change', (ev: Event) => {
-        this.updatePref(
-          'currentTheme',
-          (ev.target as HTMLInputElement)?.value
-        );
+        this.updatePref('currentTheme', (ev.target as HTMLInputElement)?.value);
       });
     });
-    
 
     const themeColourPicker = this.preferenceForm?.querySelector(
       '[name="themeColour"]'
     ) as HTMLInputElement;
     themeColourPicker.value = prefs.themeColour;
     themeColourPicker.addEventListener('input', (ev: Event) => {
-      this.updatePref(
-        'themeColour',
-        (ev.target as HTMLInputElement)?.value
-      );
-    })
+      this.updatePref('themeColour', (ev.target as HTMLInputElement)?.value);
+    });
   }
 
   private showPreferences(show: boolean) {
@@ -166,14 +192,31 @@ export default class PreferenceService {
     }
   }
 
-  private enableStyles(id: string, enable: boolean) {
+  private enableStyles(id: StylesheetNames, enable: boolean) {
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.STYLESHEET,
+      id: id,
+      description: `${id.split('Styles')[0]} Styles`,
+      isLoading: true
+    };
+    if (enable && !this.loadedStylesheets.some(sheet => sheet === id)) {
+      LoaderService.setLoadItemState(loaderItem);
+    }
     const sheet = document.getElementById(id) as HTMLLinkElement;
     sheet.disabled = !enable;
+
+    sheet.onload = () => {
+      this.loadedStylesheets.push(id);
+      setTimeout(() => {
+        loaderItem.isLoading = false;
+        LoaderService.setLoadItemState(loaderItem);
+      });
+    };
   }
 
   private sanitisePrefs(prefs: Preferences): Preferences {
-    const sanitisedPrefs = {...this.prefDefaults};
-    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(pref => {
+    const sanitisedPrefs = { ...this.prefDefaults };
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((pref) => {
       switch (pref) {
         case 'themeColour':
           sanitisedPrefs[pref] = this.sanitiseThemeColour(prefs[pref]);
@@ -181,7 +224,7 @@ export default class PreferenceService {
         case 'currentTheme':
           sanitisedPrefs[pref] = this.sanitiseThemeName(prefs[pref]);
           break;
-        
+
         default:
           sanitisedPrefs[pref] = this.sanitiseOther(pref, prefs[pref]);
           break;
@@ -206,7 +249,7 @@ export default class PreferenceService {
       case ThemeOptions.LIGHT_MODE:
       case ThemeOptions.NO_PREF:
         return theme;
-    
+
       default:
         LoggingService.logInvalidSettingEvent('currentTheme', theme || '');
         return ThemeOptions.NO_PREF;
@@ -230,7 +273,7 @@ export default class PreferenceService {
     const toggleDarkMode = this.preferenceForm?.querySelectorAll(
       '[name="currentTheme"]'
     ) as NodeListOf<HTMLInputElement>;
-    toggleDarkMode.forEach(node => node.disabled = !show);
+    toggleDarkMode.forEach((node) => (node.disabled = !show));
 
     const themeColourPicker = this.preferenceForm?.querySelector(
       '[name="themeColour"]'
@@ -250,19 +293,18 @@ export default class PreferenceService {
       document.body.classList.remove(ThemeOptions.DARK_MODE);
     }
   }
-  
 }
 
 export enum StylesheetNames {
   DYSLEXIC_STYLES = 'DyslexicStyles',
   ENHANCED_STYLES = 'EnhancedStyles',
-};
+}
 
 enum ThemeOptions {
   DARK_MODE = 'dark-mode',
   LIGHT_MODE = 'light-mode',
   NO_PREF = '-',
-};
+}
 
 export type Preferences = {
   showPreferences: boolean;
