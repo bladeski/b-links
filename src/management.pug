@@ -6,9 +6,9 @@ html(lang="en-GB")
   include templates/header.pug
   include templates/nav.pug
   main
-    h2 Management
+    h1 Management
     article
-      h3 Blog Post 
+      h2 Blog Post 
       form#PostTypeForm.post-form-type-selection
         label.radio-control Add
           input.selected(type="radio" name="post_type_selector" value="ADD" aria-label="Add Blog Post." checked) 
@@ -30,7 +30,7 @@ html(lang="en-GB")
           input(name="id" aria-label="Id for updating existing post" type="text" readonly)
         button(type="submit" aria-label="Submit post") Submit
     article 
-      h3 Add Link 
+      h2 Add Link 
       form#LinkForm
         label Link Title *
           input(name="title" aria-label="Title for link" type="text" required)

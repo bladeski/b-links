@@ -11,7 +11,7 @@ export default class BlogService {
 
   constructor() {
     const main = document.querySelector('main');
-    const heading = document.createElement('h2');
+    const heading = document.createElement('h1');
     heading.textContent = 'Blog';
 
     const subhead = document.createElement('span');
@@ -38,12 +38,10 @@ export default class BlogService {
     const loaderItem: LoaderItemModel = {
       type: LoaderItemTypes.BLOG_POST,
       id: postId,
-      description: 'Blog post',
-      isLoading: true
+      description: 'Blog post'
     }
-    LoaderService.setLoadItemState(loaderItem);
+    LoaderService.setLoadItemState(loaderItem, true);
     if (postId) {
-      loaderItem.isLoading = false;
       ApiService.getBlogPost(postId)
         .then((selectedPost) => {
           const main = document.querySelector('main');
@@ -53,7 +51,7 @@ export default class BlogService {
               false
             )
           );
-          LoaderService.setLoadItemState(loaderItem);
+          LoaderService.setLoadItemState(loaderItem, false);
         })
         .catch(() => {
           this.getAndRenderList();
@@ -61,7 +59,7 @@ export default class BlogService {
             const url = `${window.location.origin}${window.location.pathname}`;
             history.pushState({ path: url }, '', url);
           }
-          LoaderService.setLoadItemState(loaderItem);
+          LoaderService.setLoadItemState(loaderItem, true);
         });
     }
   }
@@ -162,16 +160,14 @@ export default class BlogService {
   private getAndRenderList() {
     const loaderItem: LoaderItemModel = {
       type: LoaderItemTypes.BLOG_LIST,
-      description: 'Blog list',
-      isLoading: true
+      description: 'Blog list'
     };
-    LoaderService.setLoadItemState(loaderItem);
+    LoaderService.setLoadItemState(loaderItem, true);
     this.getBlogFromLocal()
       .then(this.processBlogPosts.bind(this))
       .then(this.renderBlogList.bind(this))
       .then(() => {
-        loaderItem.isLoading = false;
-        LoaderService.setLoadItemState(loaderItem)
+        LoaderService.setLoadItemState(loaderItem, false)
       })
       .then(() => ApiService.getBlogPosts())
       .then(this.saveBlogToLocal.bind(this))

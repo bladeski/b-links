@@ -3,17 +3,20 @@ $border-radius: 6px;
 $padding-small: 0.5rem;
 $padding-standard: 1rem;
 $padding-large: 2rem;
-$padding-page-width: 5vw;
+$padding-page-width: 1rem;
+$section-margin-right: 2rem;
 
 // Fonts
+$body-font-size-mobile: 16px;
 $body-font-size: 20px;
 $font-size-regular: 1em;
 $font-size-l: 1.5em;
 $font-size-xl: 2.25em;
 $font-size-xxl: 3.375em;
 $font-size-s: 0.667rem;
-$font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+$font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+$font-family-headings: 'Maven Pro', 'Poppins', sans-serif;
 
 // Colours
 $theme-colour: hsl(230, 71%, 24%);
@@ -34,3 +37,28 @@ $danger-colour-background: lighten($danger-colour, 40%);
 
 // Transitions
 $default-transition: 250ms ease-in-out;
+$long-transition: 500ms ease-in-out;
+
+@mixin light-theme-props {
+  --theme-lightness: 24%;
+  --theme-colour: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 8%));
+  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 20%));
+  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 10%));
+  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 74%));
+  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 70%));
+  --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) + 50%));
+  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 16%));
+}
+
+@mixin dark-theme-props {
+  --theme-lightness: 76%;
+  --theme-colour: hsl(var(--theme-hue-saturation), var(--theme-lightness));
+  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 8%));
+  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 20%));
+  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 10%));
+  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
+  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
+  --border-colour: hsl(var(--theme-hue), 20%, calc(var(--theme-lightness) - 50%));
+  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+}

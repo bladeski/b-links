@@ -2,28 +2,28 @@ doctype html
 html(lang="en-GB")
   head
     include templates/head.pug
-  include templates/header.pug
-  include templates/nav.pug
-  +navbar('blog')
-  main
-    noscript
-      article
-        h2 Blog
-          span.subhead A collection of my thoughts...
-        p
-          | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
-          | to view this page in all of its glory and it appears to be disabled in your browser.
-
+  div.page-content
+    include templates/header.pug
+    main
+      noscript
+        article
+          h1 Blog
+            span.subhead A collection of my thoughts...
+          p
+            | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
+            | to view this page in all of its glory and it appears to be disabled in your browser.
+    include templates/nav.pug
+    +navbar('blog')
   include templates/footer.pug
   template#BlogPostListTemplate
     article.blog-post
-      h3
+      h2
         a.blog-post-title
         span.subhead
       p.blog-post-description
   template#BlogPostTemplate
     article.blog-post
-      h2
+      h1
         span.blog-post-title
         span.subhead
       div.blog-post-content

@@ -1,25 +1,6 @@
-footer.hide-settings
-  form#Preferences
-    label Use Dyslexic Styles
-      input(name="showDyslexicStyles" aria-label="Use dyslexic styles" type="checkbox")
-    label Show Enhanced Styles
-      input(name="showEnhancedStyles" aria-label="Show enhanced styles" type="checkbox")
-    span.theme-picker
-      | Theme:
-      label No Preference
-        input(name="currentTheme" value="-" aria-label="Use browser theme for dark/light mode selection." type="radio" disabled)
-      label Dark
-        input(name="currentTheme" value="dark-mode" aria-label="Enable dark mode" type="radio" disabled)
-      label Light
-        input(name="currentTheme" value="light-mode" aria-label="Enable light mode" type="radio" disabled)
-    label Theme Colour 
-      input(name="themeColour" aria-label="Change theme colour hue" type="range" min="0" max="360" value="314" disabled)
+footer  
   span.content
-    | &copy; Jonathan Blades 2022
-  //- button#Settings(type="button" disabled aria-label="Settings. Javascript needs to be enabled to access Settings.") Show Settings
-div#Loader
-  span Loading...
-  ul.item-list
+    | &copy; 2023 Jonathan Blades
 div#Notifications
 script(src="./scripts/index.ts" type="module")
 template#NotificationTemplate 

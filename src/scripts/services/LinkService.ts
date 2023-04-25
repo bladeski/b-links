@@ -25,7 +25,7 @@ export default class LinkService {
     linkGroups.forEach(group => {
       const groupSection = document.createElement('section');
       
-      const groupTitle = document.createElement('h3');
+      const groupTitle = document.createElement('h2');
       groupTitle.innerText = group.category;
       groupSection.appendChild(groupTitle);
 

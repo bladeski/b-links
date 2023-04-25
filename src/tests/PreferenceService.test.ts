@@ -5,26 +5,24 @@ beforeEach(() => {
   dyslexicStyles.id = StylesheetNames.DYSLEXIC_STYLES;
   document.head.appendChild(dyslexicStyles);
   
-  const enhancedStyles = document.createElement('link');
-  enhancedStyles.id = StylesheetNames.ENHANCED_STYLES;
-  document.head.appendChild(enhancedStyles);
+  const customFonts = document.createElement('link');
+  customFonts.id = StylesheetNames.CUSTOM_FONTS;
+  document.head.appendChild(customFonts);
 
   const settings = document.createElement('div');
   settings.innerHTML = `
-    <footer class="hide-settings">
+    <nav>
+      <button class="settings">Settings</button>
       <form id="Preferences">
         <input type="checkbox" name="showDyslexicStyles" />
-        <input type="checkbox" name="showEnhancedStyles" />
-        <input type="range" name="themeColour" />
+        <input type="checkbox" name="loadCustomFonts" />
+        <input type="range" name="themeColour" min="0" max="360" />
         <input type="radio" name="currentTheme" value="dark-mode" />
         <input type="radio" name="currentTheme" value="light-mode" />
-        <input type="radio" name="currentTheme" value="-" min="0" max="360" />
+        <input type="radio" name="currentTheme" value="-" />
       </form>
       <span class="content"></span>
-    </footer>
-    <template id="SettingsButtonTemplate">
-      <button id="SettingsButton" aria-label="Show settings">Settings</button>
-    </template>
+    </nav>
   `
   document.body.replaceChildren(settings);
 });
@@ -43,10 +41,10 @@ describe('Preference service', () => {
     expect(stylesheet.disabled).toBe(false);
   });
 
-  test('checking the show dyslexic styles button updates the stylesheet disabled property', () => {
+  test('checking the load custom fonts button updates the stylesheet disabled property', () => {
     new PreferenceService();
-    const checkbox = document.querySelector('[name="showEnhancedStyles"]') as HTMLInputElement;
-    const stylesheet = document.querySelector(`#${StylesheetNames.ENHANCED_STYLES}`) as HTMLLinkElement;
+    const checkbox = document.querySelector('[name="loadCustomFonts"]') as HTMLInputElement;
+    const stylesheet = document.querySelector(`#${StylesheetNames.CUSTOM_FONTS}`) as HTMLLinkElement;
 
     expect(stylesheet.disabled).toBe(true);
 
@@ -70,7 +68,7 @@ describe('Preference service', () => {
   });
 
   test('checking the show dyslexic styles button updates the localStorage settings', () => {
-    const settingName = 'showEnhancedStyles';
+    const settingName = 'loadCustomFonts';
     localStorage.setItem(settingName, 'false');
     
     new PreferenceService();

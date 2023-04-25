@@ -4,4 +4,5 @@ export type NotificationModel = {
   title: string;
   description: string;
   type: EventLogType;
+  autoClose?: boolean;
 }

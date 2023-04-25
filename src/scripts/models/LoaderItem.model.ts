@@ -1,8 +1,8 @@
 export type LoaderItemModel = {
   type: LoaderItemTypes;
-  id?: string;
+  id?: string | number;
   description: string;
-  isLoading: boolean;
+  notification?: HTMLDivElement;
 }
 
 export enum LoaderItemTypes {

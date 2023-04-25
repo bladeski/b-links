@@ -7,14 +7,13 @@ export default class PreferenceService {
   prefDefaults: Preferences = {
     showPreferences: false,
     showDyslexicStyles: false,
-    showEnhancedStyles: false,
+    loadCustomFonts: false,
     currentTheme: ThemeOptions.NO_PREF,
     themeColour: '230',
   };
 
   private currentPrefs: Preferences;
   private preferenceForm = document.forms.namedItem('Preferences');
-  private loadedStylesheets: string[] = [];
 
   constructor() {
     this.currentPrefs = this.getPrefs();
@@ -24,33 +23,52 @@ export default class PreferenceService {
       this.currentPrefs.showDyslexicStyles
     );
     this.enableStyles(
-      StylesheetNames.ENHANCED_STYLES,
-      this.currentPrefs.showEnhancedStyles
+      StylesheetNames.CUSTOM_FONTS,
+      this.currentPrefs.loadCustomFonts
     );
     this.setThemeColour(this.currentPrefs.themeColour);
     this.setTheme(this.currentPrefs.currentTheme);
-
-    this.toggleEnhancedSettings(this.currentPrefs.showEnhancedStyles);
-
-    this.updatePref('showPreferences', true);
 
     this.initialiseForm();
 
     const loaderItem: LoaderItemModel = {
       type: LoaderItemTypes.FONTS,
-      description: 'Fonts',
-      isLoading: true
+      description: 'Fonts'
     };
 
     if (document.fonts) {
       document.fonts.onloading = () => {
-        loaderItem.isLoading = true;
-        LoaderService.setLoadItemState(loaderItem);
+        LoaderService.setLoadItemState(loaderItem, true);
       }
       document.fonts.onloadingdone = () => {
-        loaderItem.isLoading = false;
-        LoaderService.setLoadItemState(loaderItem);
+        LoaderService.setLoadItemState(loaderItem, false);
       }
+    }
+
+    this.hideUnsupportedSettings();
+    this.checkWebFonts();
+  }
+
+  private hideUnsupportedSettings() {
+    if (!window.CSS || !CSS.supports('color', 'var(--test)')) {
+      this.toggleSetting('themeColour', false);
+    }
+  }
+
+  private checkWebFonts() {
+    const bodyStyles = window.getComputedStyle(document.body);
+    const bodyFontStyle = `${bodyStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
+    let titleFontAvailable = true;
+    
+    const title = document.querySelector('.title');
+    if (title) {
+      const titleStyles = window.getComputedStyle(title);
+      const titleFontStyle = `${titleStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
+      titleFontAvailable = document.fonts?.check(titleFontStyle);
+    }
+    
+    if (document.fonts?.check(bodyFontStyle) || titleFontAvailable) {
+      this.toggleSetting('loadCustomFonts', false);
     }
   }
 
@@ -76,18 +94,21 @@ export default class PreferenceService {
       case 'showPreferences':
         this.showPreferences(prefs.showPreferences);
         break;
-      case 'showDyslexicStyles':
-        this.enableStyles(
-          StylesheetNames.DYSLEXIC_STYLES,
-          prefs.showDyslexicStyles
-        );
+      case 'showDyslexicStyles':        
+        if (!prefs.showDyslexicStyles || !document.fonts?.check('12px OpenDyslexic')) {
+          this.enableStyles(
+            StylesheetNames.DYSLEXIC_STYLES,
+            prefs.showDyslexicStyles
+          );
+        }
         break;
-      case 'showEnhancedStyles':
-        this.enableStyles(
-          StylesheetNames.ENHANCED_STYLES,
-          prefs.showEnhancedStyles
-        );
-        this.toggleEnhancedSettings(prefs.showEnhancedStyles);
+      case 'loadCustomFonts':
+        if (!document.fonts?.check('12px Poppins') || !document.fonts?.check('12px Maven Pro')) {
+          this.enableStyles(
+            StylesheetNames.CUSTOM_FONTS,
+            prefs.loadCustomFonts
+          );
+        }
         break;
       case 'currentTheme':
         this.setTheme(prefs.currentTheme);
@@ -140,6 +161,14 @@ export default class PreferenceService {
   private initialiseForm() {
     const prefs = this.getPrefs();
 
+    const settingsButton = document.querySelector('button.settings') as HTMLButtonElement;
+    settingsButton.addEventListener('click', (ev: MouseEvent) => {
+      this.updatePref(
+        'showPreferences',
+        !this.currentPrefs.showPreferences
+      );
+    });
+
     const dyslexicStyleSelector = this.preferenceForm?.querySelector(
       '[name="showDyslexicStyles"]'
     ) as HTMLInputElement;
@@ -152,12 +181,12 @@ export default class PreferenceService {
     });
 
     const enhancedStylesSelector = this.preferenceForm?.querySelector(
-      '[name="showEnhancedStyles"]'
+      '[name="loadCustomFonts"]'
     ) as HTMLInputElement;
-    enhancedStylesSelector.checked = prefs.showEnhancedStyles;
+    enhancedStylesSelector.checked = prefs.loadCustomFonts;
     enhancedStylesSelector.addEventListener('click', (ev: MouseEvent) => {
       this.updatePref(
-        'showEnhancedStyles',
+        'loadCustomFonts',
         (ev.target as HTMLInputElement)?.checked
       );
     });
@@ -181,37 +210,22 @@ export default class PreferenceService {
     themeColourPicker.addEventListener('input', (ev: Event) => {
       this.updatePref('themeColour', (ev.target as HTMLInputElement)?.value);
     });
+
+    this.savePrefs(prefs);
   }
 
   private showPreferences(show: boolean) {
-    const footer = document.querySelector('footer');
+    const settings = document.querySelector('#Preferences');
     if (show) {
-      footer?.classList.remove('hide-settings');
+      settings?.classList.remove('hide');
     } else {
-      footer?.classList.add('hide-settings');
+      settings?.classList.add('hide');
     }
   }
 
   private enableStyles(id: StylesheetNames, enable: boolean) {
-    const loaderItem: LoaderItemModel = {
-      type: LoaderItemTypes.STYLESHEET,
-      id: id,
-      description: `${id.split('Styles')[0]} Styles`,
-      isLoading: true
-    };
-    if (enable && !this.loadedStylesheets.some(sheet => sheet === id)) {
-      LoaderService.setLoadItemState(loaderItem);
-    }
     const sheet = document.getElementById(id) as HTMLLinkElement;
     sheet.disabled = !enable;
-
-    sheet.onload = () => {
-      this.loadedStylesheets.push(id);
-      setTimeout(() => {
-        loaderItem.isLoading = false;
-        LoaderService.setLoadItemState(loaderItem);
-      });
-    };
   }
 
   private sanitisePrefs(prefs: Preferences): Preferences {
@@ -266,19 +280,18 @@ export default class PreferenceService {
   }
 
   private setThemeColour(colour: string) {
-    document.body.style.setProperty('--theme-hue-saturation', `${colour}, 71%`);
+    document.body.style.setProperty('--theme-hue', colour);
   }
 
-  private toggleEnhancedSettings(show: boolean) {
-    const toggleDarkMode = this.preferenceForm?.querySelectorAll(
-      '[name="currentTheme"]'
+  private toggleSetting(name: keyof Preferences, show: boolean) {
+    const settings = this.preferenceForm?.querySelectorAll(
+      `[name="${name}"]`
     ) as NodeListOf<HTMLInputElement>;
-    toggleDarkMode.forEach((node) => (node.disabled = !show));
-
-    const themeColourPicker = this.preferenceForm?.querySelector(
-      '[name="themeColour"]'
-    ) as HTMLInputElement;
-    themeColourPicker.disabled = !show;
+    settings.forEach((node) => {
+      if (node.parentElement) {
+        node.parentElement.style.display = show ? '' : 'none';
+      }
+    });
   }
 
   private setTheme(theme: ThemeOptions) {
@@ -297,7 +310,7 @@ export default class PreferenceService {
 
 export enum StylesheetNames {
   DYSLEXIC_STYLES = 'DyslexicStyles',
-  ENHANCED_STYLES = 'EnhancedStyles',
+  CUSTOM_FONTS = 'CustomFonts',
 }
 
 enum ThemeOptions {
@@ -309,7 +322,7 @@ enum ThemeOptions {
 export type Preferences = {
   showPreferences: boolean;
   showDyslexicStyles: boolean;
-  showEnhancedStyles: boolean;
+  loadCustomFonts: boolean;
   currentTheme: ThemeOptions;
   themeColour: string;
 };
