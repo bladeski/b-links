@@ -1,6 +1,6 @@
 import { BlogPostModel, LinkModel } from '../models';
 
-import ApiService from './ApiService';
+import ApiService from './data/ApiService';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
