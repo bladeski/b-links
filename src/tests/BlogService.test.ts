@@ -1,4 +1,4 @@
-import ApiService from '../scripts/services/data/ApiService';
+import ApiService from '../scripts/services/ApiService';
 import BlogService from '../scripts/services/BlogService';
 import blogMock from '../mocks/blog.mock';
 

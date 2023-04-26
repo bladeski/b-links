@@ -1,6 +1,6 @@
-import { BlogPostModel, EventLogType, LinkModel } from '../../models';
+import { BlogPostModel, EventLogType, LinkModel } from '../models';
 
-import { LoggingService } from '../LoggingService';
+import { LoggingService } from './LoggingService';
 
 export default class ApiService {
   static getBlogPost(id: string): Promise<BlogPostModel> {

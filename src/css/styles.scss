@@ -720,6 +720,8 @@ button,
     border-color: $secondary-background-colour;
     border-color: var(--secondary-background-colour);
 
+    color: $primary-font-colour;
+    color: var(--primary-font-colour);
     font-size: $font-size-s;
 
     opacity: 0.5;

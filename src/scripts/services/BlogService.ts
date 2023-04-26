@@ -1,6 +1,6 @@
 import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
 
-import ApiService from './data/ApiService';
+import ApiService from './ApiService';
 import { BlogPostModel } from '../models';
 import DOMPurify from 'dompurify';
 import LoaderService from './LoaderService';

@@ -1,4 +1,4 @@
-import ApiService from './data/ApiService';
+import ApiService from './ApiService';
 import { LinkGroupModel } from '../models/Link.model';
 import { LinkModel } from '../models';
 
