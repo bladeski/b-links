@@ -1,7 +1,7 @@
 import { NotificationModel } from '../models';
 
 export default class NotificationService {
-  static showNotification(notification: NotificationModel) {
+  static showNotification(notification: NotificationModel): HTMLDialogElement | undefined {
     const template = document.getElementById(
       'NotificationTemplate'
     ) as HTMLTemplateElement;
@@ -24,11 +24,22 @@ export default class NotificationService {
 
       const closeButton = dialog.querySelector('button.close');
       closeButton?.addEventListener('click', () => {
-        dialog.open = false
+        this.closeNotification(dialog);
       });
 
       dialog.open = true;
+
+      if (notification.autoClose) {
+        setTimeout(() => this.closeNotification(dialog), 5000);
+      }
+
+      return dialog;
     }
+  }
+
+  static closeNotification(dialog: HTMLDialogElement) {
+    dialog.classList.add('closing');
+    setTimeout(() => dialog.open = false, 500);
   }
 }
 

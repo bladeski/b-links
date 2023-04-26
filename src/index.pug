@@ -2,57 +2,61 @@ doctype html
 html(lang="en-GB")
   head
     include templates/head.pug
-  include templates/header.pug
-  include templates/nav.pug
-  +navbar('index')
-  main
-    article
-      h2 About b-links
-        span.subhead What is b-links?
-      p This is my blog and a compilation of links that I find useful - a sort of library/reference. It is very much a work in progress!
-      p I've built this with the following principles in mind...
-      ul
-        li Accessibility
-        li Performance
-        li Simplicity
-        li Progressive Enhancement
-      section
-        h3 Accessibility 
-        p 
-          | I've tried to keep accessibility at the forefront of this project. I feel that all too often it is something that
-          | is bolted onto the end of a project, and rarely done particularly well, so by keeping it as a primary focus when
-          | developing, I'm hoping to change my own approach and mindset to how accessible a site is.
-      section
-        h3 Performance 
-        p 
-          | Whilst high speed networks and devices are common-place these days, I wanted this site to be performant on both devices 
-          | that don't have the power that many of us take for granted, and for those times that our network is patchy.
-      section 
-        h3 Simplicity 
-        p 
-          | As much as I appreciate bells and whistles, I feel that sometimes keeping something simple is, well, just, plain nicer!
-          | But keeping things simple - whether it's what the user sees or what's going on behind a site - isn't always a simple task,
-          | and often means stripping down and revising code. 
-      section 
-        h3 Progressive Enhancement 
-        p 
-          | This ties in nicely to the other principles in that I wanted to keep this site clean, simple, performant and accessible,
-          | whilst also providing a richer experience where possible. Progressive Enhancement is my way of doing this.
-      section 
-        h3 Summary 
-        p 
-          | So this is the standard I'm trying to keep to. As I already said, it is very much a work in progress, and will continually 
-          | evolve, but I hope to remain faithful to these principles.
-    article 
-      h2 About Me
-      section 
-        p 
-          | Hi, I'm Jono Blades and I live and work (as a software developer) just outside of Glasgow. I am husband to the most incredible 
-          | wife and father of 2 amazing boys! 
-        p
-          | While a fair amount of my time is spent designing and building front end applications (for 
-          a(href="https://www.ibigroup.com") Arcadis IBI Group
-          | ), my life revolves around my family... and I wouldn't have it any other way. Whether we are doing Lego builds together, gaming,
-          | cooking or baking (and eating the results), or even walking our crazy Daschund, Milo, we love to 'do life' together and home is
-          | definitely our happy place!
+  div.page-content
+    include templates/header.pug
+    //- include templates/nav.pug
+    //- +navbar('index')
+    main
+      article
+        h1 About b-links
+        section
+          h2 What is b-links?
+          p This is my blog and a compilation of links that I find useful - a sort of library/reference. It is very much a work in progress!
+          p I've built this with the following principles in mind...
+          ul
+            li Accessibility
+            li Performance
+            li Simplicity
+            li Progressive Enhancement
+        section
+          h2 Accessibility 
+          p 
+            | I've tried to keep accessibility at the forefront of this project. I feel that all too often it is something that
+            | is bolted onto the end of a project, and rarely done particularly well, so by keeping it as a primary focus when
+            | developing, I'm hoping to change my own approach and mindset to how accessible a site is.
+        section
+          h2 Performance 
+          p 
+            | Whilst high speed networks and devices are common-place these days, I wanted this site to be performant on both devices 
+            | that don't have the power that many of us take for granted, and for those times that our network is patchy.
+        section 
+          h2 Simplicity 
+          p 
+            | As much as I appreciate bells and whistles, I feel that sometimes keeping something simple is, well, just, plain nicer!
+            | But keeping things simple - whether it's what the user sees or what's going on behind a site - isn't always a simple task,
+            | and often means stripping down and revising code. 
+        section 
+          h2 Progressive Enhancement 
+          p 
+            | This ties in nicely to the other principles in that I wanted to keep this site clean, simple, performant and accessible,
+            | whilst also providing a richer experience where possible. Progressive Enhancement is my way of doing this.
+        section 
+          h2 Summary 
+          p 
+            | So this is the standard I'm trying to keep to. As I already said, it is very much a work in progress, and will continually 
+            | evolve, but I hope to remain faithful to these principles.
+      article 
+        h1 About Me
+        section 
+          p 
+            | Hi, I'm Jono Blades and I live and work (as a software developer) just outside of Glasgow. I am husband to the most incredible 
+            | wife and father of 2 amazing boys! 
+          p
+            | While a fair amount of my time is spent designing and building front end applications (for 
+            a(href="https://www.ibigroup.com") Arcadis IBI Group
+            | ), my life revolves around my family... and I wouldn't have it any other way. Whether we are doing Lego builds together, gaming,
+            | cooking or baking (and eating the results), or even walking our crazy Daschund, Milo, we love to 'do life' together and home is
+            | definitely our happy place!
+    include templates/nav.pug
+    +navbar('index')
   include templates/footer.pug

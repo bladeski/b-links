@@ -1,13 +1,15 @@
-import { EventLogType } from './../models/EventLog.model';
+import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+
+import LoaderService from './LoaderService';
 import { LoggingService } from './LoggingService';
 
 export default class PreferenceService {
   prefDefaults: Preferences = {
     showPreferences: false,
     showDyslexicStyles: false,
-    showEnhancedStyles: false,
+    loadCustomFonts: false,
     currentTheme: ThemeOptions.NO_PREF,
-    themeColour: "230"
+    themeColour: '230',
   };
 
   private currentPrefs: Preferences;
@@ -16,16 +18,70 @@ export default class PreferenceService {
   constructor() {
     this.currentPrefs = this.getPrefs();
 
-    this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, this.currentPrefs.showDyslexicStyles);
-    this.enableStyles(StylesheetNames.ENHANCED_STYLES, this.currentPrefs.showEnhancedStyles);
+    this.enableStyles(
+      StylesheetNames.DYSLEXIC_STYLES,
+      this.currentPrefs.showDyslexicStyles
+    );
     this.setThemeColour(this.currentPrefs.themeColour);
     this.setTheme(this.currentPrefs.currentTheme);
-    
-    this.toggleEnhancedSettings(this.currentPrefs.showEnhancedStyles);
-    
-    this.updatePref('showPreferences', true);
 
     this.initialiseForm();
+
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.FONTS,
+      description: 'Fonts'
+    };
+
+    if (document.fonts) {
+      document.fonts.onloading = () => {
+        LoaderService.setLoadItemState(loaderItem, true);
+      }
+      document.fonts.onloadingdone = () => {
+        LoaderService.setLoadItemState(loaderItem, false);
+      }
+    }
+
+    this.hideUnsupportedSettings();
+    this.checkWebFonts();
+    LoaderService.setMask();
+  }
+
+  private hideUnsupportedSettings() {
+    if (!window.CSS || !CSS.supports('color', 'var(--test)')) {
+      this.toggleSetting('themeColour', false);
+    }
+  }
+
+  private checkWebFonts(loadFonts: boolean = false) {
+    const bodyStyles = window.getComputedStyle(document.body);
+    const bodyFontStyle = `${bodyStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
+    const bodyFontAvailable = document.fonts?.check(bodyFontStyle);
+
+    let headerFontAvailable = true;
+    
+    const header = document.querySelector('.title');
+    if (header) {
+      const headerStyles = window.getComputedStyle(header);
+      const headerFontStyle = `${headerStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
+      headerFontAvailable = document.fonts?.check(headerFontStyle);
+    }
+    
+    if (bodyFontAvailable && headerFontAvailable) {
+      this.toggleSetting('loadCustomFonts', false);
+    } else {
+      if (!headerFontAvailable) {
+        this.enableStyles(
+          StylesheetNames.HEADER_FONT,
+          loadFonts
+        );
+      }
+      if (!bodyFontAvailable) {
+        this.enableStyles(
+          StylesheetNames.BODY_FONT,
+          loadFonts
+        );
+      }
+    }
   }
 
   private updatePref(prefName: keyof Preferences, value: boolean | string) {
@@ -50,12 +106,16 @@ export default class PreferenceService {
       case 'showPreferences':
         this.showPreferences(prefs.showPreferences);
         break;
-      case 'showDyslexicStyles':
-        this.enableStyles(StylesheetNames.DYSLEXIC_STYLES, prefs.showDyslexicStyles);
+      case 'showDyslexicStyles':        
+        if (!prefs.showDyslexicStyles || !document.fonts?.check('12px OpenDyslexic')) {
+          this.enableStyles(
+            StylesheetNames.DYSLEXIC_STYLES,
+            prefs.showDyslexicStyles
+          );
+        }
         break;
-      case 'showEnhancedStyles':
-        this.enableStyles(StylesheetNames.ENHANCED_STYLES, prefs.showEnhancedStyles);
-        this.toggleEnhancedSettings(prefs.showEnhancedStyles);
+      case 'loadCustomFonts':
+        this.checkWebFonts(prefs.loadCustomFonts);
         break;
       case 'currentTheme':
         this.setTheme(prefs.currentTheme);
@@ -64,7 +124,7 @@ export default class PreferenceService {
         if (typeof value === 'string' && !isNaN(parseInt(value))) {
           this.setThemeColour(value);
         }
-        
+
       default:
         break;
     }
@@ -72,7 +132,7 @@ export default class PreferenceService {
 
   private getPrefs(): Preferences {
     const prefs: Preferences = {
-      ...this.prefDefaults
+      ...this.prefDefaults,
     };
     (Object.keys(this.prefDefaults) as (keyof Preferences)[]).forEach((key) => {
       const value = localStorage.getItem(key) || '';
@@ -81,22 +141,23 @@ export default class PreferenceService {
         case 'themeColour':
           prefs[key] = value;
           break;
-        case 'currentTheme':       
+        case 'currentTheme':
           prefs[key] = value as ThemeOptions;
           break;
-  
+
         default:
-          prefs[key] = value !== null ? value === 'true' : this.prefDefaults[key];
+          prefs[key] =
+            value !== null ? value === 'true' : this.prefDefaults[key];
           break;
       }
     });
-  
+
     return this.sanitisePrefs(prefs);
   }
 
   private savePrefs(prefs: Preferences) {
     const sanitisedPrefs = this.sanitisePrefs(prefs);
-    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(key => {
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((key) => {
       if (key !== 'showPreferences') {
         localStorage.setItem(key, `${sanitisedPrefs[key]}`);
       }
@@ -106,7 +167,15 @@ export default class PreferenceService {
 
   private initialiseForm() {
     const prefs = this.getPrefs();
-    
+
+    const settingsButton = document.querySelector('button.settings') as HTMLButtonElement;
+    settingsButton.addEventListener('click', (ev: MouseEvent) => {
+      this.updatePref(
+        'showPreferences',
+        !this.currentPrefs.showPreferences
+      );
+    });
+
     const dyslexicStyleSelector = this.preferenceForm?.querySelector(
       '[name="showDyslexicStyles"]'
     ) as HTMLInputElement;
@@ -119,12 +188,12 @@ export default class PreferenceService {
     });
 
     const enhancedStylesSelector = this.preferenceForm?.querySelector(
-      '[name="showEnhancedStyles"]'
+      '[name="loadCustomFonts"]'
     ) as HTMLInputElement;
-    enhancedStylesSelector.checked = prefs.showEnhancedStyles;
+    enhancedStylesSelector.checked = prefs.loadCustomFonts;
     enhancedStylesSelector.addEventListener('click', (ev: MouseEvent) => {
       this.updatePref(
-        'showEnhancedStyles',
+        'loadCustomFonts',
         (ev.target as HTMLInputElement)?.checked
       );
     });
@@ -132,48 +201,43 @@ export default class PreferenceService {
     const themeSelector = this.preferenceForm?.querySelectorAll(
       '[name="currentTheme"]'
     ) as NodeListOf<HTMLInputElement>;
-    themeSelector.forEach(node => {
+    themeSelector.forEach((node) => {
       if (node.value === prefs.currentTheme) {
         node.checked = true;
       }
       node.addEventListener('change', (ev: Event) => {
-        this.updatePref(
-          'currentTheme',
-          (ev.target as HTMLInputElement)?.value
-        );
+        this.updatePref('currentTheme', (ev.target as HTMLInputElement)?.value);
       });
     });
-    
 
     const themeColourPicker = this.preferenceForm?.querySelector(
       '[name="themeColour"]'
     ) as HTMLInputElement;
     themeColourPicker.value = prefs.themeColour;
     themeColourPicker.addEventListener('input', (ev: Event) => {
-      this.updatePref(
-        'themeColour',
-        (ev.target as HTMLInputElement)?.value
-      );
-    })
+      this.updatePref('themeColour', (ev.target as HTMLInputElement)?.value);
+    });
+
+    this.savePrefs(prefs);
   }
 
   private showPreferences(show: boolean) {
-    const footer = document.querySelector('footer');
+    const settings = document.querySelector('#Preferences');
     if (show) {
-      footer?.classList.remove('hide-settings');
+      settings?.classList.remove('hide');
     } else {
-      footer?.classList.add('hide-settings');
+      settings?.classList.add('hide');
     }
   }
 
-  private enableStyles(id: string, enable: boolean) {
+  private enableStyles(id: StylesheetNames, enable: boolean) {
     const sheet = document.getElementById(id) as HTMLLinkElement;
     sheet.disabled = !enable;
   }
 
   private sanitisePrefs(prefs: Preferences): Preferences {
-    const sanitisedPrefs = {...this.prefDefaults};
-    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach(pref => {
+    const sanitisedPrefs = { ...this.prefDefaults };
+    (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((pref) => {
       switch (pref) {
         case 'themeColour':
           sanitisedPrefs[pref] = this.sanitiseThemeColour(prefs[pref]);
@@ -181,7 +245,7 @@ export default class PreferenceService {
         case 'currentTheme':
           sanitisedPrefs[pref] = this.sanitiseThemeName(prefs[pref]);
           break;
-        
+
         default:
           sanitisedPrefs[pref] = this.sanitiseOther(pref, prefs[pref]);
           break;
@@ -206,7 +270,7 @@ export default class PreferenceService {
       case ThemeOptions.LIGHT_MODE:
       case ThemeOptions.NO_PREF:
         return theme;
-    
+
       default:
         LoggingService.logInvalidSettingEvent('currentTheme', theme || '');
         return ThemeOptions.NO_PREF;
@@ -223,19 +287,18 @@ export default class PreferenceService {
   }
 
   private setThemeColour(colour: string) {
-    document.body.style.setProperty('--theme-hue-saturation', `${colour}, 71%`);
+    document.body.style.setProperty('--theme-hue', colour);
   }
 
-  private toggleEnhancedSettings(show: boolean) {
-    const toggleDarkMode = this.preferenceForm?.querySelectorAll(
-      '[name="currentTheme"]'
+  private toggleSetting(name: keyof Preferences, show: boolean) {
+    const settings = this.preferenceForm?.querySelectorAll(
+      `[name="${name}"]`
     ) as NodeListOf<HTMLInputElement>;
-    toggleDarkMode.forEach(node => node.disabled = !show);
-
-    const themeColourPicker = this.preferenceForm?.querySelector(
-      '[name="themeColour"]'
-    ) as HTMLInputElement;
-    themeColourPicker.disabled = !show;
+    settings.forEach((node) => {
+      if (node.parentElement) {
+        node.parentElement.style.display = show ? '' : 'none';
+      }
+    });
   }
 
   private setTheme(theme: ThemeOptions) {
@@ -250,24 +313,24 @@ export default class PreferenceService {
       document.body.classList.remove(ThemeOptions.DARK_MODE);
     }
   }
-  
 }
 
 export enum StylesheetNames {
   DYSLEXIC_STYLES = 'DyslexicStyles',
-  ENHANCED_STYLES = 'EnhancedStyles',
-};
+  BODY_FONT = 'BodyFontStyles',
+  HEADER_FONT = 'HeaderFontStyles',
+}
 
 enum ThemeOptions {
   DARK_MODE = 'dark-mode',
   LIGHT_MODE = 'light-mode',
   NO_PREF = '-',
-};
+}
 
 export type Preferences = {
   showPreferences: boolean;
   showDyslexicStyles: boolean;
-  showEnhancedStyles: boolean;
+  loadCustomFonts: boolean;
   currentTheme: ThemeOptions;
   themeColour: string;
 };

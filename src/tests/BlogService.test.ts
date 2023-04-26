@@ -8,14 +8,6 @@ beforeEach(() => {
 });
 
 describe('Blog service', () => {
-  test('the blog header is rendered', () => {
-    ApiService.getBlogPosts = jest.fn(() => Promise.resolve([]));
-
-    const blogService = new BlogService();
-    const main = document.querySelector('main');
-    expect(main?.children.length).toBe(1);
-  });
-
   test('loads blogs from localStorage', () => {
     ApiService.getBlogPosts = jest.fn(() => Promise.resolve([]));
 

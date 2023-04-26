@@ -2,33 +2,34 @@ doctype html
 html(lang="en-GB")
   head
     include templates/head.pug
-  include templates/header.pug
-  include templates/nav.pug
-  +navbar('links')
-  main
-    article
-      h2 Links
-        span.subhead A curated list of useful links...
-      noscript
-        p
-          | Unfortunately JavaScript is required to see my full list of links, and it appears that 
-          | it is disabled in your browser. In the meantime, here is a shorter list of links related to
-          | this site:
-        section
-          h3 GitHub
-          ul 
-            li
-              a(
-                href="https://github.com/bladeski/b-links"
-                aria-label="b-links source code."
-                )
-                | b-links source code.
-            li
-              a(
-                href="https://github.com/bladeski"
-                aria-label="My GitHub profile."
-                )
-                | My GitHub profile.
+  div.page-content
+    include templates/header.pug
+    main
+      article
+        h1 Links
+          span.subhead A curated list of useful links...
+        noscript
+          p
+            | Unfortunately JavaScript is required to see my full list of links, and it appears that 
+            | it is disabled in your browser. In the meantime, here is a shorter list of links related to
+            | this site:
+          section
+            h2 GitHub
+            ul 
+              li
+                a(
+                  href="https://github.com/bladeski/b-links"
+                  aria-label="b-links source code."
+                  )
+                  | b-links source code.
+              li
+                a(
+                  href="https://github.com/bladeski"
+                  aria-label="My GitHub profile."
+                  )
+                  | My GitHub profile.
+    include templates/nav.pug
+    +navbar('links')
   include templates/footer.pug
   template#LinksTemplate
     li.link

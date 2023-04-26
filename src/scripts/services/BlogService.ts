@@ -1,28 +1,21 @@
+import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+
 import ApiService from './ApiService';
 import { BlogPostModel } from '../models';
 import DOMPurify from 'dompurify';
+import LoaderService from './LoaderService';
 import { marked } from 'marked';
 
 export default class BlogService {
   postId: string | null;
 
   constructor() {
-    const main = document.querySelector('main');
-    const heading = document.createElement('h2');
-    heading.textContent = 'Blog';
-
-    const subhead = document.createElement('span');
-    subhead.className = 'subhead';
-    subhead.textContent = ' A collection of my thoughts...';
-    heading.appendChild(subhead);
-    main?.appendChild(heading);
-
     this.postId = this.processSearchParams();
 
     if (this.postId) {
-      this.renderBlogPost(this.postId)
+      this.renderBlogPost(this.postId);
     } else {
-      this.getAndRenderList()
+      this.getAndRenderList();
     }
   }
 
@@ -32,22 +25,34 @@ export default class BlogService {
   }
 
   private renderBlogPost(postId: string) {
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.BLOG_POST,
+      id: postId,
+      description: 'Blog post',
+      showMask: true
+    }
+    LoaderService.setLoadItemState(loaderItem, true);
     if (postId) {
-      ApiService.getBlogPost(postId).then(selectedPost => {
-        const main = document.querySelector('main');
-        main?.replaceChildren(
-          this.createBlogPostElement(
-            this.processBlogPost(selectedPost), false
-          )
-        );
-      })
-      .catch(() => {
-        this.getAndRenderList();
-        if (history.pushState) {
-          const url = `${window.location.origin}${window.location.pathname}`;
-          history.pushState({ path: url }, '', url);
-        }
-      });
+      const main = document.querySelector('main');
+
+      ApiService.getBlogPost(postId)
+        .then((selectedPost) => {
+          main?.replaceChildren(
+            this.createBlogPostElement(
+              this.processBlogPost(selectedPost),
+              false
+            )
+          );
+          LoaderService.setLoadItemState(loaderItem, false);
+        })
+        .catch(() => {
+          this.getAndRenderList();
+          if (history.pushState) {
+            const url = `${window.location.origin}${window.location.pathname}`;
+            history.pushState({ path: url }, '', url);
+          }
+          LoaderService.setLoadItemState(loaderItem, true);
+        });
     }
   }
 
@@ -66,7 +71,10 @@ export default class BlogService {
     return this.createBlogPostElement(post, true);
   }
 
-  private createBlogPostElement(post: BlogPostModel, isSummary = true): HTMLElement {
+  private createBlogPostElement(
+    post: BlogPostModel,
+    isSummary = true
+  ): HTMLElement {
     const template = document.getElementById(
       isSummary ? 'BlogPostListTemplate' : 'BlogPostTemplate'
     ) as HTMLTemplateElement;
@@ -78,7 +86,9 @@ export default class BlogService {
       const blogPost = clone.querySelector('.blog-post') as HTMLElement;
       blogPost.id = `blog-post_${post._id}`;
 
-      const title = blogPost.querySelector('.blog-post-title') as HTMLAnchorElement;
+      const title = blogPost.querySelector(
+        '.blog-post-title'
+      ) as HTMLAnchorElement;
 
       if (isSummary) {
         title.href = `./blog.html?id=${post._id}`;
@@ -89,7 +99,7 @@ export default class BlogService {
       }
 
       const date = blogPost.querySelector('.subhead') as HTMLElement;
-      date.textContent = `First posted ${post.createdAt?.toLocaleDateString()}`;
+      date.textContent = post.createdAt ? `First posted ${post.createdAt?.toLocaleDateString()}` : post.description;
 
       if (isSummary && post.description) {
         const description = blogPost.querySelector(
@@ -124,7 +134,10 @@ export default class BlogService {
     return Promise.resolve(
       posts
         .map(this.processBlogPost)
-        .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
+        .sort(
+          (a, b) =>
+            (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
+        )
     );
   }
 
@@ -137,9 +150,18 @@ export default class BlogService {
   }
 
   private getAndRenderList() {
+    const loaderItem: LoaderItemModel = {
+      type: LoaderItemTypes.BLOG_LIST,
+      description: 'Blog list',
+      showMask: true
+    };
+    LoaderService.setLoadItemState(loaderItem, true);
     this.getBlogFromLocal()
       .then(this.processBlogPosts.bind(this))
       .then(this.renderBlogList.bind(this))
+      .then(() => {
+        LoaderService.setLoadItemState(loaderItem, false)
+      })
       .then(() => ApiService.getBlogPosts())
       .then(this.saveBlogToLocal.bind(this))
       .then(this.processBlogPosts.bind(this))

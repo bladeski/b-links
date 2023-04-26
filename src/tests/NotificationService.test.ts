@@ -32,6 +32,8 @@ describe('Notification service', () => {
   });
 
   test('a notification is closed on click of close button', () => {
+    jest.useFakeTimers();
+
     NotificationService.showNotification({
       title: 'Test Notification.',
       description: 'This is a test notification.',
@@ -46,6 +48,8 @@ describe('Notification service', () => {
     expect(dialog?.open).toBe(true);
     const closeButton = dialog?.querySelector('dialog button.close') as HTMLButtonElement;
     closeButton.click();
+
+    jest.runAllTimers();
 
     expect(dialog?.open).toBe(false);
   });
