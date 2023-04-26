@@ -6,7 +6,7 @@ beforeEach(() => {
   document.head.appendChild(dyslexicStyles);
   
   const customFonts = document.createElement('link');
-  customFonts.id = StylesheetNames.CUSTOM_FONTS;
+  customFonts.id = StylesheetNames.BODY_FONT;
   document.head.appendChild(customFonts);
 
   const settings = document.createElement('div');
@@ -44,7 +44,7 @@ describe('Preference service', () => {
   test('checking the load custom fonts button updates the stylesheet disabled property', () => {
     new PreferenceService();
     const checkbox = document.querySelector('[name="loadCustomFonts"]') as HTMLInputElement;
-    const stylesheet = document.querySelector(`#${StylesheetNames.CUSTOM_FONTS}`) as HTMLLinkElement;
+    const stylesheet = document.querySelector(`#${StylesheetNames.BODY_FONT }`) as HTMLLinkElement;
 
     expect(stylesheet.disabled).toBe(true);
 

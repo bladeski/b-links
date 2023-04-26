@@ -49,6 +49,7 @@ $long-transition: 500ms ease-in-out;
   --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 70%));
   --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) + 50%));
   --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 16%));
+  --mask-colour: rgba(255,255,255,0.8);
 }
 
 @mixin dark-theme-props {
@@ -61,4 +62,5 @@ $long-transition: 500ms ease-in-out;
   --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
   --border-colour: hsl(var(--theme-hue), 20%, calc(var(--theme-lightness) - 50%));
   --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
+  --mask-colour: rgba(0,0,0,0.8);
 }

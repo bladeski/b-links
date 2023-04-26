@@ -10,16 +10,6 @@ export default class BlogService {
   postId: string | null;
 
   constructor() {
-    const main = document.querySelector('main');
-    const heading = document.createElement('h1');
-    heading.textContent = 'Blog';
-
-    const subhead = document.createElement('span');
-    subhead.className = 'subhead';
-    subhead.textContent = ' A collection of my thoughts...';
-    heading.appendChild(subhead);
-    main?.appendChild(heading);
-
     this.postId = this.processSearchParams();
 
     if (this.postId) {
@@ -38,13 +28,15 @@ export default class BlogService {
     const loaderItem: LoaderItemModel = {
       type: LoaderItemTypes.BLOG_POST,
       id: postId,
-      description: 'Blog post'
+      description: 'Blog post',
+      showMask: true
     }
     LoaderService.setLoadItemState(loaderItem, true);
     if (postId) {
+      const main = document.querySelector('main');
+
       ApiService.getBlogPost(postId)
         .then((selectedPost) => {
-          const main = document.querySelector('main');
           main?.replaceChildren(
             this.createBlogPostElement(
               this.processBlogPost(selectedPost),
@@ -107,7 +99,7 @@ export default class BlogService {
       }
 
       const date = blogPost.querySelector('.subhead') as HTMLElement;
-      date.textContent = `First posted ${post.createdAt?.toLocaleDateString()}`;
+      date.textContent = post.createdAt ? `First posted ${post.createdAt?.toLocaleDateString()}` : post.description;
 
       if (isSummary && post.description) {
         const description = blogPost.querySelector(
@@ -160,7 +152,8 @@ export default class BlogService {
   private getAndRenderList() {
     const loaderItem: LoaderItemModel = {
       type: LoaderItemTypes.BLOG_LIST,
-      description: 'Blog list'
+      description: 'Blog list',
+      showMask: true
     };
     LoaderService.setLoadItemState(loaderItem, true);
     this.getBlogFromLocal()

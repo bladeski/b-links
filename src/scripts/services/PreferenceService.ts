@@ -22,10 +22,6 @@ export default class PreferenceService {
       StylesheetNames.DYSLEXIC_STYLES,
       this.currentPrefs.showDyslexicStyles
     );
-    this.enableStyles(
-      StylesheetNames.CUSTOM_FONTS,
-      this.currentPrefs.loadCustomFonts
-    );
     this.setThemeColour(this.currentPrefs.themeColour);
     this.setTheme(this.currentPrefs.currentTheme);
 
@@ -47,6 +43,7 @@ export default class PreferenceService {
 
     this.hideUnsupportedSettings();
     this.checkWebFonts();
+    LoaderService.setMask();
   }
 
   private hideUnsupportedSettings() {
@@ -55,20 +52,35 @@ export default class PreferenceService {
     }
   }
 
-  private checkWebFonts() {
+  private checkWebFonts(loadFonts: boolean = false) {
     const bodyStyles = window.getComputedStyle(document.body);
     const bodyFontStyle = `${bodyStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
-    let titleFontAvailable = true;
+    const bodyFontAvailable = document.fonts?.check(bodyFontStyle);
+
+    let headerFontAvailable = true;
     
-    const title = document.querySelector('.title');
-    if (title) {
-      const titleStyles = window.getComputedStyle(title);
-      const titleFontStyle = `${titleStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
-      titleFontAvailable = document.fonts?.check(titleFontStyle);
+    const header = document.querySelector('.title');
+    if (header) {
+      const headerStyles = window.getComputedStyle(header);
+      const headerFontStyle = `${headerStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
+      headerFontAvailable = document.fonts?.check(headerFontStyle);
     }
     
-    if (document.fonts?.check(bodyFontStyle) || titleFontAvailable) {
+    if (bodyFontAvailable && headerFontAvailable) {
       this.toggleSetting('loadCustomFonts', false);
+    } else {
+      if (!headerFontAvailable) {
+        this.enableStyles(
+          StylesheetNames.HEADER_FONT,
+          loadFonts
+        );
+      }
+      if (!bodyFontAvailable) {
+        this.enableStyles(
+          StylesheetNames.BODY_FONT,
+          loadFonts
+        );
+      }
     }
   }
 
@@ -103,12 +115,7 @@ export default class PreferenceService {
         }
         break;
       case 'loadCustomFonts':
-        if (!document.fonts?.check('12px Poppins') || !document.fonts?.check('12px Maven Pro')) {
-          this.enableStyles(
-            StylesheetNames.CUSTOM_FONTS,
-            prefs.loadCustomFonts
-          );
-        }
+        this.checkWebFonts(prefs.loadCustomFonts);
         break;
       case 'currentTheme':
         this.setTheme(prefs.currentTheme);
@@ -310,7 +317,8 @@ export default class PreferenceService {
 
 export enum StylesheetNames {
   DYSLEXIC_STYLES = 'DyslexicStyles',
-  CUSTOM_FONTS = 'CustomFonts',
+  BODY_FONT = 'BodyFontStyles',
+  HEADER_FONT = 'HeaderFontStyles',
 }
 
 enum ThemeOptions {

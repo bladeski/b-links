@@ -5,10 +5,11 @@ html(lang="en-GB")
   div.page-content
     include templates/header.pug
     main
-      noscript
-        article
-          h1 Blog
-            span.subhead A collection of my thoughts...
+      article
+        h1 Blog
+          span.subhead A collection of my thoughts...
+        noscript 
+          section
           p
             | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
             | to view this page in all of its glory and it appears to be disabled in your browser.
@@ -24,7 +25,9 @@ html(lang="en-GB")
   template#BlogPostTemplate
     article.blog-post
       h1
-        span.blog-post-title
-        span.subhead
-      div.blog-post-content
+        span
+          span.blog-post-title
+        span
+          span.subhead
+      section.blog-post-content
   script(src="./scripts/blog.ts" type="module")

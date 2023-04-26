@@ -3,6 +3,7 @@ export type LoaderItemModel = {
   id?: string | number;
   description: string;
   notification?: HTMLDivElement;
+  showMask?: boolean;
 }
 
 export enum LoaderItemTypes {

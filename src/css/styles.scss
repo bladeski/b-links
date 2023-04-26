@@ -400,6 +400,11 @@ footer .content {
   padding: 0 $padding-page-width;
 }
 
+header,
+nav {
+  z-index: 1;
+}
+
 header {
   display: flex;
   top: 0;
@@ -656,23 +661,18 @@ button,
   }
 }
 
-#SettingsButton {
-  display: none;
-}
-
+#Loaders,
 #Notifications {
   display: flex;
   position: absolute;
-  right: 0;
   bottom: $padding-large;
   flex-direction: column;
-  align-items: flex-end;
   padding: $padding-standard;
 
   gap: $padding-small;
 
   dialog,
-  div {
+  .loader {
     position: relative;
     width: 50vw;
     max-width: 450px;
@@ -686,7 +686,83 @@ button,
 
     opacity: 1;
     transition: opacity 0.5s ease;
+  }
+}
 
+#Loaders {
+  left: 0;
+  align-items: flex-start;
+
+  .mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    backdrop-filter: blur(10px);
+    background-color: rgb(128,128,128);
+    background-color: var(--mask-colour);
+
+    &.hide {
+      display: none;
+    }
+
+    & ~ .loader {
+      opacity: 1;
+    }
+  }
+
+  .loader {
+    width: auto;
+    padding: $padding-small $padding-standard $padding-small $padding-large;
+
+    border-color: $secondary-background-colour;
+    border-color: var(--secondary-background-colour);
+
+    font-size: $font-size-s;
+
+    opacity: 0.5;
+    transition: opacity $long-transition;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &::before {
+      display: flex;
+      position: absolute;
+      top: $padding-small;
+      left: $padding-small;
+      width: $padding-standard;
+      height: $padding-standard;
+
+      border: 1px solid;
+      border-radius: 50%;
+      border-color: transparent $theme-colour $theme-colour $theme-colour;
+      border-color: transparent var(--theme-colour) var(--theme-colour) var(--theme-colour);
+
+      animation: spin 2s infinite linear;
+      content: '';
+
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+
+    &.closing {
+      opacity: 0;
+    }
+  }
+}
+
+#Notifications {
+  right: 0;
+  align-items: flex-end;
+
+  dialog {
     &.info {
       border-color: $info-colour;
 
@@ -716,50 +792,6 @@ button,
 
       summary {
         background-color: $danger-colour-background;
-      }
-    }
-
-    &.loader {
-      width: auto;
-      padding: $padding-small $padding-standard $padding-small $padding-large;
-
-      border-color: $secondary-background-colour;
-      border-color: var(--secondary-background-colour);
-
-      font-size: $font-size-s;
-
-      opacity: 0.5;
-      transition: opacity $long-transition;
-
-      &:hover {
-        opacity: 1;
-      }
-
-      &::before {
-        display: flex;
-        position: absolute;
-        top: $padding-small;
-        left: $padding-small;
-        width: $padding-standard;
-        height: $padding-standard;
-
-        border: 1px solid;
-        border-radius: 50%;
-        border-color: transparent $theme-colour $theme-colour $theme-colour;
-        border-color: transparent var(--theme-colour) var(--theme-colour) var(--theme-colour);
-
-        animation: spin 2s infinite linear;
-        content: '';
-
-        @keyframes spin {
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      }
-
-      &.closing {
-        opacity: 0;
       }
     }
 
