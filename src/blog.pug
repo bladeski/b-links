@@ -6,7 +6,8 @@ html(lang="en-GB")
     include templates/header.pug
     main
       article
-        h1 Blog
+        hgroup
+          h1 Blog
           span.subhead A collection of my thoughts...
         noscript 
           section
@@ -24,10 +25,8 @@ html(lang="en-GB")
       p.blog-post-description
   template#BlogPostTemplate
     article.blog-post
-      h1
-        span
-          span.blog-post-title
-        span
-          span.subhead
+      hgroup
+        h1.blog-post-title
+        span.subhead
       section.blog-post-content
   script(src="./scripts/blog.ts" type="module")

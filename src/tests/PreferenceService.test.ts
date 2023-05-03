@@ -1,4 +1,6 @@
-import PreferenceService, { StylesheetNames } from '../scripts/services/PreferenceService';
+import { ElementSelector, StylesheetNames } from '../scripts/enums';
+
+import PreferenceService from '../scripts/services/PreferenceService';
 
 beforeEach(() => {
   const dyslexicStyles = document.createElement('link');
@@ -11,6 +13,7 @@ beforeEach(() => {
 
   const settings = document.createElement('div');
   settings.innerHTML = `
+    <div class="title">Title</div>
     <nav>
       <button class="settings">Settings</button>
       <form id="Preferences">

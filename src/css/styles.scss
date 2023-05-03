@@ -109,7 +109,25 @@ h3 {
 
   font-size: $font-size-xl;
   font-weight: 900;
+  text-decoration: none;
   white-space: nowrap;
+
+  &:visited,
+  &:active,
+  &:focus {
+    color: $primary-font-colour;
+    color: var(--primary-font-colour);
+    text-decoration: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &[aria-label]:hover:after {
+    top: unset;
+    bottom: -$padding-standard;
+  }
 }
 
 .nav-item {
@@ -521,6 +539,43 @@ blockquote {
   font-style: italic;
 }
 
+code,
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.2rem;
+  padding: 0 $padding-small;
+
+  border: 1px solid $border-colour;
+  border-radius: 4px;
+  border-color: var(--border-colour);
+
+  background-color: $secondary-background-colour;
+  background-color: var(--secondary-background-colour);
+
+  vertical-align: baseline;
+
+  &[data-lang]::before {
+    margin-right: $padding-small;
+    padding: 0 $padding-small 0 0;
+
+    border-right: 1px solid $border-colour;
+    border-color: var(--border-colour);
+
+    font-family: $font-family;
+    font-size: $font-size-s;
+    line-height: 1.2rem;
+
+    content: attr(data-lang);
+  }
+}
+
+kbd {
+  border-right-width: 3px;
+  border-bottom-width: 3px;
+}
+
 .subhead {
   font-size: 1rem;
   font-weight: 400;
@@ -534,7 +589,7 @@ button,
   border-radius: $border-radius;
   border-color: var(--theme-colour);
 
-  line-height: 1.5;;
+  line-height: 1.5;
 
   &:not(:disabled):hover,
   &:not(:disabled):focus,
@@ -637,6 +692,53 @@ button,
   }
 }
 
+.settings {
+  &.hide {
+    display: none;
+  }
+}
+
+.page-link {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin-top: $padding-small;
+
+  color: $primary-font-colour;
+  color: var(--primary-font-colour);
+
+  opacity: 0.5;
+
+  gap: 4px;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &::before,
+  &::after {
+    width: $padding-small;
+    height: $padding-small;
+
+    border: 2px solid;
+
+    content: '';
+  }
+
+  &::before {
+    border-right: none;
+    border-top-left-radius: $padding-small;
+    border-bottom-left-radius: $padding-small;
+  }
+
+  &::after {
+    border-left: none;
+    border-top-right-radius: $padding-small;
+    border-bottom-right-radius: $padding-small;
+  }
+}
+
 #Preferences {
   display: flex;
   flex-direction: column;
@@ -720,8 +822,11 @@ button,
     border-color: $secondary-background-colour;
     border-color: var(--secondary-background-colour);
 
-    color: $primary-font-colour;
-    color: var(--primary-font-colour);
+    background-color: $primary-font-colour;
+    background-color: var(--primary-font-colour);
+
+    color: $secondary-background-colour;
+    color: var(--secondary-background-colour);
     font-size: $font-size-s;
 
     opacity: 0.5;
@@ -739,10 +844,10 @@ button,
       width: $padding-standard;
       height: $padding-standard;
 
-      border: 1px solid;
+      border: 2px solid;
       border-radius: 50%;
-      border-color: transparent $theme-colour $theme-colour $theme-colour;
-      border-color: transparent var(--theme-colour) var(--theme-colour) var(--theme-colour);
+      border-color: transparent $secondary-background-colour $secondary-background-colour $secondary-background-colour;
+      border-color: transparent var(--secondary-background-colour) var(--secondary-background-colour) var(--secondary-background-colour);
 
       animation: spin 2s infinite linear;
       content: '';
@@ -868,6 +973,14 @@ button,
 
   &:hover {
     background-color: var(--primary-font-colour);
+  }
+}
+
+@media (scripting: none) {
+  .settings,
+  #Preferences,
+  .mask {
+    display: none;
   }
 }
 
