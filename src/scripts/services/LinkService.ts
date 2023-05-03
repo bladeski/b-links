@@ -1,6 +1,8 @@
+import { ElementSelector, LocalStorageItem } from '../enums';
+import { LinkGroupModel, LinkModel } from '../models';
+
 import ApiService from './ApiService';
-import { LinkGroupModel } from '../models/Link.model';
-import { LinkModel } from '../models';
+import { PageLinkService } from './PageLinkService';
 
 export default class LinkService {
   constructor() {  
@@ -18,15 +20,17 @@ export default class LinkService {
   }
   
   private renderLinks(links: LinkModel[]) {
-    const main = document.querySelector('main');
-    main?.querySelectorAll('section').forEach((node) => node.remove());
+    const main = document.querySelector(ElementSelector.MAIN_CONTENT);
+    main?.querySelectorAll(ElementSelector.SECTION).forEach((node) => node.remove());
 
     const linkGroups = this.getLinkGroups(links);
     linkGroups.forEach(group => {
       const groupSection = document.createElement('section');
       
       const groupTitle = document.createElement('h2');
+      groupTitle.id = group.category.replace(' ', '-').toLowerCase();
       groupTitle.innerText = group.category;
+      groupTitle.appendChild(PageLinkService.createPageLink(groupTitle.id));
       groupSection.appendChild(groupTitle);
 
       const list = document.createElement('ul');
@@ -40,7 +44,7 @@ export default class LinkService {
   
   private createLinkElement(link: LinkModel): HTMLElement {
     const item = document.createElement('li');
-    item.id = `link_${link._id}`;
+    item.id = `${ElementSelector.LINK_ID_PREFIX}_${link._id}`;
 
     const anchor = document.createElement('a');
     const url = new URL(link.url);
@@ -55,13 +59,13 @@ export default class LinkService {
   
   private getLinksFromLocal(): Promise<LinkModel[]> {
     return new Promise((res, rej) => {
-      const links = localStorage.getItem('links') || '[]';
+      const links = localStorage.getItem(LocalStorageItem.LINKS) || '[]';
       res(JSON.parse(links));
     });
   }
   
   private saveLinksToLocal(links: LinkModel[]): Promise<LinkModel[]> {
-    localStorage.setItem('links', JSON.stringify(links));
+    localStorage.setItem(LocalStorageItem.LINKS, JSON.stringify(links));
     return Promise.resolve(links);
   }
   

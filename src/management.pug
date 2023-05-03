@@ -3,8 +3,8 @@ html(lang="en-GB")
   head
     include templates/head.pug
     link(rel="stylesheet" href="./css/management.scss")
-  include templates/header.pug
-  include templates/nav.pug
+  div.page-content
+    include templates/header.pug
   main
     h1 Management
     article
@@ -40,5 +40,7 @@ html(lang="en-GB")
           input(name="categories" aria-label="Categories for link" type="text")
         button(type="submit" aria-label="Submit link") Submit
 
+    include templates/nav.pug
+    +navbar('management')
   include templates/footer.pug
   script(src="./scripts/management.ts" type="module")

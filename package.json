@@ -4,13 +4,14 @@
   "description": "A curated list of useful links.",
   "author": "Jonathan Blades",
   "license": "MIT",
-  "source": "src/index.html",
+  "source": "src/links.html",
   "type": "module",
   "scripts": {
     "clean:dist": "rimraf dist",
     "clean:dist-serve": "rimraf dist-serve",
+    "clean:dist-serve-management": "rimraf dist-serve-management",
     "start": "npm run clean:dist-serve && parcel serve src/index.pug src/robots.txt --dist-dir dist-serve",
-    "start:management": "npm run clean:dist-serve && parcel serve src/management.pug src/robots.txt --dist-dir dist-serve-management --port 1235",
+    "start:management": "npm run clean:dist-serve-management && parcel serve src/management.pug src/robots.txt --dist-dir dist-serve-management --port 1235",
     "build": "npm run clean:dist && parcel build src/index.pug src/robots.txt --no-source-maps --public-url /b-links",
     "test": "jest"
   },

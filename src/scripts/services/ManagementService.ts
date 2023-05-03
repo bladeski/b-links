@@ -1,7 +1,8 @@
-import { BlogPostModel, LinkModel } from '../models';
+import { BlogPostModel, EventLogType, LinkModel } from '../models';
 
 import ApiService from './ApiService';
 import DOMPurify from 'dompurify';
+import NotificationService from './NotificationService';
 import { marked } from 'marked';
 
 enum FormType {
@@ -79,10 +80,23 @@ export default class ManagementService {
       categories: formData.get('categories')?.toString().split(' ') || [],
     };
     ApiService.addBlogPost(post, id).then(() => {
+      NotificationService.showNotification({
+        title: 'Blog Post Saved',
+        description: 'Successfully saved new blog post.',
+        type: EventLogType.SUCCESS
+      });
+
       this.postForm?.reset();
       const preview = document.getElementById('PostPreview') as HTMLElement;
       preview.innerHTML = '';
-    });
+      localStorage.removeItem('postDraft');
+    }).catch(err => 
+      NotificationService.showNotification({
+        title: 'Problem Saving Blog Post',
+        description: err.text,
+        type: EventLogType.ERROR
+      })
+    );
   }
 
   private onSubmitLinkForm(event: SubmitEvent) {
@@ -94,12 +108,34 @@ export default class ManagementService {
       categories: formData.get('categories')?.toString().split(' ') || [],
     };
     ApiService.addLink(link).then(() => {
+      NotificationService.showNotification({
+        title: 'Link Saved',
+        description: 'Successfully saved new link.',
+        type: EventLogType.SUCCESS
+      });
       this.linkForm?.reset();
-    });
+    }).catch(err => 
+      NotificationService.showNotification({
+        title: 'Problem Saving Link',
+        description: err.text,
+        type: EventLogType.ERROR
+      })
+    );
   }
 
   private onUpdatePostInput(event: Event) {
     this.updatePreview((event.target as HTMLTextAreaElement).value);
+    const formData = new FormData((event.currentTarget as HTMLInputElement).form || undefined);
+    const storageItem: BlogPostModel = {
+      _id: FormType.EDIT
+        ? formData.get('id')?.toString()
+        : undefined,
+      title: formData.get('title')?.toString() || '',
+      description: formData.get('description')?.toString() || '',
+      post: (event.target as HTMLTextAreaElement).value,
+      categories: formData.get('categories')?.toString().split(' ') || []
+    }
+    localStorage.setItem('postDraft', JSON.stringify(storageItem));
   }
 
   private updatePreview(text: string) {
@@ -119,8 +155,9 @@ export default class ManagementService {
     });
   }
 
-  private initialiseEditForm(id: string) {
-    const selectedPost = this.blogPosts.find((post) => post._id === id);
+  private async initialiseEditForm(id: string) {
+    const selectedPost = await ApiService.getBlogPost(id);
+    //this.blogPosts.find((post) => post._id === id);
 
     if (selectedPost) {
       const titleInput = this.postForm?.querySelector(

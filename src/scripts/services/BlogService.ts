@@ -1,7 +1,7 @@
-import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+import { BlogPostModel, LoaderItemModel } from '../models';
+import { ElementSelector, LoaderType, LocalStorageItem } from '../enums';
 
 import ApiService from './ApiService';
-import { BlogPostModel } from '../models';
 import DOMPurify from 'dompurify';
 import LoaderService from './LoaderService';
 import { marked } from 'marked';
@@ -26,14 +26,14 @@ export default class BlogService {
 
   private renderBlogPost(postId: string) {
     const loaderItem: LoaderItemModel = {
-      type: LoaderItemTypes.BLOG_POST,
+      type: LoaderType.BLOG_POST,
       id: postId,
       description: 'Blog post',
       showMask: true
     }
     LoaderService.setLoadItemState(loaderItem, true);
     if (postId) {
-      const main = document.querySelector('main');
+      const main = document.querySelector(ElementSelector.MAIN_CONTENT);
 
       ApiService.getBlogPost(postId)
         .then((selectedPost) => {
@@ -57,13 +57,13 @@ export default class BlogService {
   }
 
   private renderBlogList(posts: BlogPostModel[]) {
-    const main = document.querySelector('main');
+    const main = document.querySelector(ElementSelector.MAIN_CONTENT);
 
     const postEls: HTMLElement[] = posts.map(
       this.createBlogPostSummaryElement.bind(this)
     );
 
-    main?.querySelectorAll('[id^=blog-post_]').forEach((node) => node.remove());
+    main?.querySelectorAll(`[id^=${ElementSelector.BLOG_POST_ID_PREFIX}]`).forEach((node) => node.remove());
     main?.append(...postEls);
   }
 
@@ -75,19 +75,19 @@ export default class BlogService {
     post: BlogPostModel,
     isSummary = true
   ): HTMLElement {
-    const template = document.getElementById(
-      isSummary ? 'BlogPostListTemplate' : 'BlogPostTemplate'
+    const template = document.querySelector(
+      isSummary ? ElementSelector.BLOG_POST_LIST_TEMPLATE_ID : ElementSelector.BLOG_POST_TEMPLATE_ID
     ) as HTMLTemplateElement;
 
     if (template && 'content' in document.createElement('template')) {
       // `<template>` is supported.
 
       const clone = template.content.cloneNode(true) as DocumentFragment;
-      const blogPost = clone.querySelector('.blog-post') as HTMLElement;
-      blogPost.id = `blog-post_${post._id}`;
+      const blogPost = clone.querySelector(ElementSelector.BLOG_POST_CLASS) as HTMLElement;
+      blogPost.id = `${ElementSelector.BLOG_POST_ID_PREFIX}${post._id}`;
 
       const title = blogPost.querySelector(
-        '.blog-post-title'
+        ElementSelector.BLOG_POST_TITLE_CLASS
       ) as HTMLAnchorElement;
 
       if (isSummary) {
@@ -98,17 +98,17 @@ export default class BlogService {
         title.textContent = post.title;
       }
 
-      const date = blogPost.querySelector('.subhead') as HTMLElement;
+      const date = blogPost.querySelector(ElementSelector.SUBHEAD_CLASS) as HTMLElement;
       date.textContent = post.createdAt ? `First posted ${post.createdAt?.toLocaleDateString()}` : post.description;
 
       if (isSummary && post.description) {
         const description = blogPost.querySelector(
-          '.blog-post-description'
+          ElementSelector.BLOG_POST_DESCRIPTION_CLASS
         ) as HTMLElement;
         description.textContent = post.description;
       } else if (!isSummary) {
         const content = blogPost.querySelector(
-          '.blog-post-content'
+          ElementSelector.BLOG_POST_CONTENT_CLASS
         ) as HTMLElement;
         content.innerHTML = DOMPurify.sanitize(marked.parse(post.post));
       }
@@ -120,13 +120,13 @@ export default class BlogService {
 
   private getBlogFromLocal(): Promise<BlogPostModel[]> {
     return new Promise((res, rej) => {
-      const posts = localStorage.getItem('blogPosts') || '[]';
+      const posts = localStorage.getItem(LocalStorageItem.BLOG_POSTS) || '[]';
       res(JSON.parse(posts));
     });
   }
 
   private saveBlogToLocal(posts: BlogPostModel[]): Promise<BlogPostModel[]> {
-    localStorage.setItem('blogPosts', JSON.stringify(posts));
+    localStorage.setItem(LocalStorageItem.BLOG_POSTS, JSON.stringify(posts));
     return Promise.resolve(posts);
   }
 
@@ -151,7 +151,7 @@ export default class BlogService {
 
   private getAndRenderList() {
     const loaderItem: LoaderItemModel = {
-      type: LoaderItemTypes.BLOG_LIST,
+      type: LoaderType.BLOG_LIST,
       description: 'Blog list',
       showMask: true
     };

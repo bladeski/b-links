@@ -1,5 +1,7 @@
-import { LoaderItemModel, LoaderItemTypes } from '../models/LoaderItem.model';
+import { LoaderItemModel, Preferences } from '../models';
+import { LoaderType, Preference, StylesheetNames, ThemeOptions } from '../enums';
 
+import { ElementSelector } from '../enums/ElementSelector.enum';
 import LoaderService from './LoaderService';
 import { LoggingService } from './LoggingService';
 
@@ -13,7 +15,7 @@ export default class PreferenceService {
   };
 
   private currentPrefs: Preferences;
-  private preferenceForm = document.forms.namedItem('Preferences');
+  private preferenceForm = document.forms.namedItem(ElementSelector.PREF_FORM_ID);
 
   constructor() {
     this.currentPrefs = this.getPrefs();
@@ -24,11 +26,15 @@ export default class PreferenceService {
     );
     this.setThemeColour(this.currentPrefs.themeColour);
     this.setTheme(this.currentPrefs.currentTheme);
+    if (this.checkWebFontsLoaded()) {
+      this.toggleSetting(Preference.LOAD_CUSTOM_FONTS, false);
+    }
 
+    this.showSettingsButton();
     this.initialiseForm();
 
     const loaderItem: LoaderItemModel = {
-      type: LoaderItemTypes.FONTS,
+      type: LoaderType.FONTS,
       description: 'Fonts'
     };
 
@@ -42,56 +48,63 @@ export default class PreferenceService {
     }
 
     this.hideUnsupportedSettings();
-    this.checkWebFonts();
     LoaderService.setMask();
+  }
+
+  private showSettingsButton(show = true) {
+    const button = document.querySelector(ElementSelector.PREF_TOGGLE_CLASS);
+    
+    if (button && show) {
+      button.classList.remove('hide');
+    } else if (button) {
+      button.classList.add('hide');
+    }
   }
 
   private hideUnsupportedSettings() {
     if (!window.CSS || !CSS.supports('color', 'var(--test)')) {
-      this.toggleSetting('themeColour', false);
+      this.toggleSetting(Preference.THEME_COLOUR, false);
     }
   }
 
-  private checkWebFonts(loadFonts: boolean = false) {
+  private checkWebFontsLoaded(): boolean {
     const bodyStyles = window.getComputedStyle(document.body);
     const bodyFontStyle = `${bodyStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
     const bodyFontAvailable = document.fonts?.check(bodyFontStyle);
 
     let headerFontAvailable = true;
     
-    const header = document.querySelector('.title');
+    const header = document.querySelector(ElementSelector.TITLE_CLASS);
     if (header) {
       const headerStyles = window.getComputedStyle(header);
       const headerFontStyle = `${headerStyles.fontSize} ${bodyStyles.fontFamily.split(',')[0]}`;
       headerFontAvailable = document.fonts?.check(headerFontStyle);
     }
-    
-    if (bodyFontAvailable && headerFontAvailable) {
-      this.toggleSetting('loadCustomFonts', false);
-    } else {
-      if (!headerFontAvailable) {
-        this.enableStyles(
-          StylesheetNames.HEADER_FONT,
-          loadFonts
-        );
-      }
-      if (!bodyFontAvailable) {
-        this.enableStyles(
-          StylesheetNames.BODY_FONT,
-          loadFonts
-        );
-      }
+
+    if (!headerFontAvailable) {
+      this.enableStyles(
+        StylesheetNames.HEADER_FONT,
+        this.currentPrefs.loadCustomFonts
+      );
     }
+    if (!bodyFontAvailable) {
+      this.enableStyles(
+        StylesheetNames.BODY_FONT,
+        this.currentPrefs.loadCustomFonts
+      );
+    }
+
+    return bodyFontAvailable && headerFontAvailable;
   }
 
-  private updatePref(prefName: keyof Preferences, value: boolean | string) {
+  private updatePref(prefName: Preference, value: boolean | string) {
     const prefs = { ...this.currentPrefs };
 
     switch (prefName) {
-      case 'themeColour':
+      case Preference.THEME_COLOUR:
         prefs[prefName] = value.toString();
         break;
-      case 'currentTheme':
+      case Preference.CURRENT_THEME:
         prefs[prefName] = value as ThemeOptions;
         break;
 
@@ -103,24 +116,22 @@ export default class PreferenceService {
     this.savePrefs(prefs);
 
     switch (prefName) {
-      case 'showPreferences':
+      case Preference.SHOW_PREFERENCES:
         this.showPreferences(prefs.showPreferences);
         break;
-      case 'showDyslexicStyles':        
-        if (!prefs.showDyslexicStyles || !document.fonts?.check('12px OpenDyslexic')) {
-          this.enableStyles(
-            StylesheetNames.DYSLEXIC_STYLES,
-            prefs.showDyslexicStyles
-          );
-        }
+      case Preference.SHOW_DYSLEXIC_STYLES:        
+        this.enableStyles(
+          StylesheetNames.DYSLEXIC_STYLES,
+          prefs.showDyslexicStyles
+        );
         break;
-      case 'loadCustomFonts':
-        this.checkWebFonts(prefs.loadCustomFonts);
+      case Preference.LOAD_CUSTOM_FONTS:
+        this.checkWebFontsLoaded();
         break;
-      case 'currentTheme':
+      case Preference.CURRENT_THEME:
         this.setTheme(prefs.currentTheme);
         break;
-      case 'themeColour':
+      case Preference.THEME_COLOUR:
         if (typeof value === 'string' && !isNaN(parseInt(value))) {
           this.setThemeColour(value);
         }
@@ -138,10 +149,10 @@ export default class PreferenceService {
       const value = localStorage.getItem(key) || '';
 
       switch (key) {
-        case 'themeColour':
+        case Preference.THEME_COLOUR:
           prefs[key] = value;
           break;
-        case 'currentTheme':
+        case Preference.CURRENT_THEME:
           prefs[key] = value as ThemeOptions;
           break;
 
@@ -158,7 +169,7 @@ export default class PreferenceService {
   private savePrefs(prefs: Preferences) {
     const sanitisedPrefs = this.sanitisePrefs(prefs);
     (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((key) => {
-      if (key !== 'showPreferences') {
+      if (key !== Preference.SHOW_PREFERENCES) {
         localStorage.setItem(key, `${sanitisedPrefs[key]}`);
       }
     });
@@ -168,10 +179,10 @@ export default class PreferenceService {
   private initialiseForm() {
     const prefs = this.getPrefs();
 
-    const settingsButton = document.querySelector('button.settings') as HTMLButtonElement;
+    const settingsButton = document.querySelector(ElementSelector.PREF_TOGGLE_CLASS) as HTMLButtonElement;
     settingsButton.addEventListener('click', (ev: MouseEvent) => {
       this.updatePref(
-        'showPreferences',
+        Preference.SHOW_PREFERENCES,
         !this.currentPrefs.showPreferences
       );
     });
@@ -182,7 +193,7 @@ export default class PreferenceService {
     dyslexicStyleSelector.checked = prefs.showDyslexicStyles;
     dyslexicStyleSelector.addEventListener('click', (ev: MouseEvent) => {
       this.updatePref(
-        'showDyslexicStyles',
+        Preference.SHOW_DYSLEXIC_STYLES,
         (ev.target as HTMLInputElement)?.checked
       );
     });
@@ -193,7 +204,7 @@ export default class PreferenceService {
     enhancedStylesSelector.checked = prefs.loadCustomFonts;
     enhancedStylesSelector.addEventListener('click', (ev: MouseEvent) => {
       this.updatePref(
-        'loadCustomFonts',
+        Preference.LOAD_CUSTOM_FONTS,
         (ev.target as HTMLInputElement)?.checked
       );
     });
@@ -206,7 +217,7 @@ export default class PreferenceService {
         node.checked = true;
       }
       node.addEventListener('change', (ev: Event) => {
-        this.updatePref('currentTheme', (ev.target as HTMLInputElement)?.value);
+        this.updatePref(Preference.CURRENT_THEME, (ev.target as HTMLInputElement)?.value);
       });
     });
 
@@ -215,34 +226,36 @@ export default class PreferenceService {
     ) as HTMLInputElement;
     themeColourPicker.value = prefs.themeColour;
     themeColourPicker.addEventListener('input', (ev: Event) => {
-      this.updatePref('themeColour', (ev.target as HTMLInputElement)?.value);
+      this.updatePref(Preference.THEME_COLOUR, (ev.target as HTMLInputElement)?.value);
     });
 
     this.savePrefs(prefs);
   }
 
   private showPreferences(show: boolean) {
-    const settings = document.querySelector('#Preferences');
     if (show) {
-      settings?.classList.remove('hide');
+      this.preferenceForm?.classList.remove('hide');
     } else {
-      settings?.classList.add('hide');
+      this.preferenceForm?.classList.add('hide');
     }
   }
 
   private enableStyles(id: StylesheetNames, enable: boolean) {
     const sheet = document.getElementById(id) as HTMLLinkElement;
-    sheet.disabled = !enable;
+    
+    if (sheet) {
+      sheet.disabled = !enable;
+    }
   }
 
   private sanitisePrefs(prefs: Preferences): Preferences {
     const sanitisedPrefs = { ...this.prefDefaults };
     (Object.keys(sanitisedPrefs) as (keyof Preferences)[]).forEach((pref) => {
       switch (pref) {
-        case 'themeColour':
+        case Preference.THEME_COLOUR:
           sanitisedPrefs[pref] = this.sanitiseThemeColour(prefs[pref]);
           break;
-        case 'currentTheme':
+        case Preference.CURRENT_THEME:
           sanitisedPrefs[pref] = this.sanitiseThemeName(prefs[pref]);
           break;
 
@@ -258,7 +271,7 @@ export default class PreferenceService {
   private sanitiseThemeColour(colour: string | null): string {
     const colourValue = parseInt(colour || this.prefDefaults.themeColour) % 360;
     if (isNaN(colourValue)) {
-      LoggingService.logInvalidSettingEvent('themeColour', colour || '');
+      LoggingService.logInvalidSettingEvent(Preference.THEME_COLOUR, colour || '');
       return this.prefDefaults.themeColour;
     }
     return `${colourValue < 0 ? 360 - colourValue : colourValue}`;
@@ -272,7 +285,7 @@ export default class PreferenceService {
         return theme;
 
       default:
-        LoggingService.logInvalidSettingEvent('currentTheme', theme || '');
+        LoggingService.logInvalidSettingEvent(Preference.CURRENT_THEME, theme || '');
         return ThemeOptions.NO_PREF;
     }
   }
@@ -314,23 +327,3 @@ export default class PreferenceService {
     }
   }
 }
-
-export enum StylesheetNames {
-  DYSLEXIC_STYLES = 'DyslexicStyles',
-  BODY_FONT = 'BodyFontStyles',
-  HEADER_FONT = 'HeaderFontStyles',
-}
-
-enum ThemeOptions {
-  DARK_MODE = 'dark-mode',
-  LIGHT_MODE = 'light-mode',
-  NO_PREF = '-',
-}
-
-export type Preferences = {
-  showPreferences: boolean;
-  showDyslexicStyles: boolean;
-  loadCustomFonts: boolean;
-  currentTheme: ThemeOptions;
-  themeColour: string;
-};

@@ -1,7 +1,13 @@
-import { LoaderItemModel } from '../models/LoaderItem.model';
+import { ElementSelector } from '../enums';
+import { LoaderItemModel } from '../models';
 
 class _LoaderService {
   private itemsLoading: LoaderItemModel[] = [];
+
+  constructor() {
+    const mask = document.querySelector(`${ElementSelector.LOADER_CONTAINER_ID} ${ElementSelector.LOADER_MASK_CLASS}`);
+    mask?.classList.remove('hide');
+  }
 
   public setLoadItemState(item: LoaderItemModel, isLoading: boolean) {
     if (isLoading) {
@@ -37,7 +43,7 @@ class _LoaderService {
     loader.className = 'loader';
     loader.innerText = `Loading ${item.description}`;
 
-    const notifications = document.getElementById('Loaders');
+    const notifications = document.querySelector(ElementSelector.LOADER_CONTAINER_ID);
     notifications?.appendChild(loader);
     return loader;
   }
@@ -53,7 +59,7 @@ class _LoaderService {
   }
 
   public setMask() {
-    const mask = document.querySelector('#Loaders .mask');
+    const mask = document.querySelector(`${ElementSelector.LOADER_CONTAINER_ID} ${ElementSelector.LOADER_MASK_CLASS}`);
 
     if (mask && this.itemsLoading.some(item => item.showMask)) {
       mask.classList.remove('hide');
