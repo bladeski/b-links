@@ -11,5 +11,5 @@
     "moduleResolution": "Node",
     "target": "ES6"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/pages/.pugrc"],
 }

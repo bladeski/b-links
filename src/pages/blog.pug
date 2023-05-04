@@ -1,22 +1,30 @@
 doctype html
 html(lang="en-GB")
   head
-    include templates/head.pug
+    include ../templates/head.pug
   div.page-content
-    include templates/header.pug
+    include ../templates/header.pug
     main
       article
         hgroup
           h1 Blog
           span.subhead A collection of my thoughts...
+        section 
+          each post in posts
+            article.blog-post 
+              hgroup 
+                h2 
+                  a.blog-post-title(href="/src/pages/post/" + post._id + ".html") #{post.title}
+                  span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
+              p.blog-post-description #{post.description}
         noscript 
           section
           p
             | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
             | to view this page in all of its glory and it appears to be disabled in your browser.
-    include templates/nav.pug
+    include ../templates/nav.pug
     +navbar('blog')
-  include templates/footer.pug
+  include ../templates/footer.pug
   template#BlogPostListTemplate
     article.blog-post
       h2
@@ -29,4 +37,4 @@ html(lang="en-GB")
         h1.blog-post-title
         span.subhead
       section.blog-post-content
-  script(src="./scripts/blog.ts" type="module")
+  script(src="../scripts/blog.ts" type="module")

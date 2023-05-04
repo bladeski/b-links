@@ -6,5 +6,4 @@ export type BlogPostModel = {
   categories: string[];
   createdAt?: Date;
   updatedAt?: Date;
-  token?: string;
 };

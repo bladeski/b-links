@@ -1,9 +1,9 @@
 doctype html
 html(lang="en-GB")
   head
-    include templates/head.pug
+    include ../templates/head.pug
   div.page-content
-    include templates/header.pug
+    include ../templates/header.pug
     main
       article
         hgroup
@@ -29,10 +29,10 @@ html(lang="en-GB")
                   aria-label="My GitHub profile."
                   )
                   | My GitHub profile.
-    include templates/nav.pug
+    include ../templates/nav.pug
     +navbar('links')
-  include templates/footer.pug
+  include ../templates/footer.pug
   template#LinksTemplate
     li.link
       a
-  script(src="./scripts/links.ts" type="module")
+  script(src="../scripts/links.ts" type="module")

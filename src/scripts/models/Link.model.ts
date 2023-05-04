@@ -5,7 +5,6 @@ export type LinkModel = {
   categories?: string[];
   createdAt?: Date;
   updatedAt?: Date;
-  token?: string;
 };
 
 export type LinkGroupModel = {

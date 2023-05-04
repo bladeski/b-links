@@ -2,7 +2,7 @@ import { BlogPostModel, LoaderItemModel } from '../models';
 import { ElementSelector, LoaderType, LocalStorageItem } from '../enums';
 
 import ApiService from './ApiService';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import LoaderService from './LoaderService';
 import { marked } from 'marked';
 

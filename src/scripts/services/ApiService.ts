@@ -35,10 +35,10 @@ export default class ApiService {
     });
   }
   static addBlogPost(post: BlogPostModel, id?: string): Promise<BlogPostModel> {
-    post.token = process.env.AUTH_TOKEN || '';
     return new Promise((res, rej) => {
       fetch(
-        `${process.env.API_URL}blogPost?code=${process.env.API_BLOG_KEY}`,
+        // `${process.env.API_URL}blogPost?code=${process.env.API_BLOG_KEY}`,
+        'http://localhost:3000/blogPost',
         {
           method: id ? 'PUT' : 'POST',
           body: JSON.stringify({
@@ -76,10 +76,10 @@ export default class ApiService {
     });
   }
   static addLink(link: LinkModel): Promise<LinkModel> {
-    link.token = process.env.AUTH_TOKEN || '';
     return new Promise((res, rej) => {
       fetch(
-        `${process.env.API_URL}link?code=${process.env.API_LINK_KEY}`,
+        // `${process.env.API_URL}link?code=${process.env.API_LINK_KEY}`,
+        'http://localhost:3000/link',
         {
           method: 'POST',
           body: JSON.stringify({
