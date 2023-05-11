@@ -14,7 +14,7 @@ html(lang="en-GB")
             article.blog-post 
               hgroup 
                 h2 
-                  a.blog-post-title(href="/src/pages/post/" + post._id + ".html") #{post.title}
+                  a.blog-post-title(href='/src/pages/post/' + new Date(post.createdAt).getFullYear() + '/' + post.name + '.html') #{post.title}
                   span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
               p.blog-post-description #{post.description}
         noscript 
@@ -37,4 +37,3 @@ html(lang="en-GB")
         h1.blog-post-title
         span.subhead
       section.blog-post-content
-  script(src="../scripts/blog.ts" type="module")

@@ -1,24 +1,39 @@
-import { LinkGroupModel, LinkModel } from './../../src/scripts/models/Link.model';
+import { BlogPostModel, getPostName } from '../scripts/models/BlogPost.model.js';
 import { readFile, writeFile } from 'node:fs';
 
-import { BlogPostModel } from './../../src/scripts/models/BlogPost.model';
-import { Buffer } from 'node:buffer'
+import { LinkModel } from '../scripts/models/Link.model';
+import { buildPosts } from './buildPosts.js';
 import cors from 'cors';
 import express from 'express';
-import { log } from 'node:console';
-
-// import { writeFile } from 'node:fs/promises';
-
-
 
 const app = express();
-const port = 3000;
+const port = 1236;
 
-const blogPostFileUrl = 'src/data/blogPosts.json';
+const blogPostFileUrl = 'src/pages/.pugrc';
 const linksFileUrl = 'src/data/links.json';
 
 app.use(express.json());
 app.use(cors());
+
+app.get('/blogPost', (req, res) => {
+  getBlogPosts()
+    .then(blogPosts => res.send(blogPosts))
+    .catch(() => onFailure(res, 'There was a problem getting the blogPosts.'));
+});
+
+app.get('/blogPost/:id', (req, res) => {
+  getBlogPosts()
+    .then(blogPosts => {
+      const post = blogPosts.find(blogPost => blogPost._id === req.params.id);
+
+      if (post) {
+        res.send(post);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(() => onFailure(res, 'There was a problem getting the blogPosts.'));
+});
 
 app.post('/blogPost', (req, res) => {
   const post = req.body.document;
@@ -27,6 +42,7 @@ app.post('/blogPost', (req, res) => {
   post._id = id;
   post.createdAt = created;
   post.updatedAt = created;
+  post.name = getPostName(post);
 
   getBlogPosts().then(posts => {
     posts.push(post);
@@ -82,7 +98,7 @@ app.post('/link', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`API started on port ${port}`)
 });
 
 function onSuccess(res: express.Response, data: any) {
@@ -97,7 +113,7 @@ function getBlogPosts(): Promise<BlogPostModel[]> {
   return new Promise((res, rej) => {
     readFile(blogPostFileUrl, 'utf8', (err, data) => {
       if (data) {
-        res(JSON.parse(data) as BlogPostModel[]);
+        res(JSON.parse(data).locals.posts as BlogPostModel[]);
       } else {
         res([]);
       }
@@ -107,14 +123,8 @@ function getBlogPosts(): Promise<BlogPostModel[]> {
 
 function writeBlogPosts(posts: BlogPostModel[]): Promise<void> {
   return new Promise((res, rej) => {
-    writeFile(blogPostFileUrl, JSON.stringify(posts), (error) => {
-      if (error) {
-        rej(error);
-      } else {
-        res();
-      }
-    });
-  })
+    buildPosts(posts);
+  });
 }
 
 function getLinks(): Promise<LinkModel[]> {
