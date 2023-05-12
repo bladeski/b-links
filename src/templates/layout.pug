@@ -1,0 +1,16 @@
+- var pageName = ''
+
+doctype html
+html(lang="en-GB")
+  head
+    include head.pug
+  body
+    .page-content 
+      block header
+        include header.pug
+      main
+        block content
+      include nav.pug
+      +navbar(pageName)
+    include footer.pug
+    block scripts
