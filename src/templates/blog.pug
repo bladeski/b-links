@@ -17,11 +17,6 @@ html(lang="en-GB")
                   a.blog-post-title(href='/src/pages/post/' + new Date(post.createdAt).getFullYear() + '/' + post.name + '.html') #{post.title}
                   span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
               p.blog-post-description #{post.description}
-        noscript 
-          section
-          p
-            | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
-            | to view this page in all of its glory and it appears to be disabled in your browser.
     include ../templates/nav.pug
     +navbar('blog')
   include ../templates/footer.pug

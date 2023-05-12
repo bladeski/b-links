@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, writeFile } from 'node:fs';
+import { mkdir, rm, writeFile } from 'node:fs';
 
 import { BlogPostModel } from '../scripts/models/BlogPost.model';
 import DOMPurify from 'isomorphic-dompurify';
@@ -6,7 +6,7 @@ import { marked } from 'marked';
 import pug from 'pug';
 
 export function buildPosts(posts: BlogPostModel[]) {
-  clearPosts().then(() => {
+  clearPosts().then(() => {    
     if (Array.isArray(posts)) {
       const fn = pug.compileFile('src/templates/blogPost.pug', {});
       posts.forEach(post => {
@@ -26,25 +26,14 @@ export function buildPosts(posts: BlogPostModel[]) {
           }
         });
       });
+
+      const fn1 = pug.compileFile('src/templates/blog.pug', {});
   
-      processBlogPosts(posts).then(blogPosts => {
-        const config = {
-          locals: {
-            posts: blogPosts
-          }
-        };
-        writeFile(`src/pages/.pugrc`, JSON.stringify(config), (error) => {
-          if (error) {
-            console.log(error);
-          }
-        });
+      writeFile(`src/pages/blog.html`, fn1({posts}), (error) => {
+        if (error) {
+          console.log(error);
+        }
       });
-  
-      // writeFile(`src/pages/posts/${post._id}.html`, fn(post), (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
     }
   });
 }
@@ -69,23 +58,4 @@ function clearPosts(): Promise<void> {
       }
     })
   });
-}
-
-function processBlogPosts(posts: BlogPostModel[]) {
-  return Promise.resolve(
-    posts
-      .map(processBlogPost)
-      .sort(
-        (a, b) =>
-          (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
-      )
-  );
-}
-
-function processBlogPost(post: BlogPostModel) {
-  return {
-    ...post,
-    createdAt: new Date(post.createdAt || ''),
-    updatedAt: new Date(post.updatedAt || ''),
-  };
 }

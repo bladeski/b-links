@@ -37,7 +37,7 @@ export default class ApiService {
   static addBlogPost(post: BlogPostModel, id?: string): Promise<BlogPostModel> {
     return new Promise((res, rej) => {
       fetch(
-        `${process.env.API_URL}blogPost`,
+        `${process.env.API_URL}blogPost${id ? '/' + id : ''}`,
         {
           method: id ? 'PUT' : 'POST',
           body: JSON.stringify({
