@@ -1,0 +1,26 @@
+doctype html
+html(lang="en-GB")
+  head
+    include ../templates/head.pug
+  div.page-content
+    include ../templates/header.pug
+    main
+      article
+        hgroup
+          h1 Links
+          span.subhead A curated list of useful links...
+        each section in sections
+          section          
+            h2= section.title
+            ul 
+            each link in section.links
+              li
+                a(
+                  href=link.url
+                  aria-label=link.title
+                  )
+                  = link.title
+          
+    include ../templates/nav.pug
+    +navbar('links')
+  include ../templates/footer.pug

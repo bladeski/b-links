@@ -44,7 +44,7 @@ describe('API service', () => {
       expect(thenFn).toHaveBeenCalledWith([]);
       done();
     }).catch(catchFn);
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost`);
 
     jestMockFetch.mockResponse({
       json: () => []
@@ -60,7 +60,7 @@ describe('API service', () => {
       expect(catchFn).toHaveBeenCalledWith(mockError);
       done();
     });
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost`);
 
     jestMockFetch.mockError(mockError);
   });
@@ -70,7 +70,7 @@ describe('API service', () => {
     const catchFn = jest.fn();
 
     ApiService.getBlogPost('123').then(thenFn).catch(catchFn);
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}&id=123`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost/123`);
   });
   
   test('receives an error when there is a problem GETting blog post data.', (done) => {
@@ -82,7 +82,7 @@ describe('API service', () => {
       expect(catchFn).toHaveBeenCalledWith(mockError);
       done();
     });
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogpost?code=${process.env.API_BLOG_KEY}&id=123`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost/123`);
 
     jestMockFetch.mockError(mockError);
   });
@@ -93,7 +93,7 @@ describe('API service', () => {
 
     ApiService.addBlogPost(blogPost).then(thenFn).catch(catchFn);
     expect(fetch).toHaveBeenCalledWith(
-      `${process.env.API_URL}blogPost?code=${process.env.API_BLOG_KEY}`,
+      `${process.env.API_URL}blogPost`,
       {
         body: JSON.stringify({
           document: blogPost,
@@ -115,7 +115,7 @@ describe('API service', () => {
       expect(catchFn).toHaveBeenCalledWith(mockError);
       done();
     });
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost?code=${process.env.API_BLOG_KEY}`,
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}blogPost`,
       {
         body: JSON.stringify({
           document: blogPost,
@@ -135,7 +135,7 @@ describe('API service', () => {
     const catchFn = jest.fn();
 
     ApiService.getLinks().then(thenFn).catch(catchFn);
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link?code=${process.env.API_LINK_KEY}`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link`);
   });
   
   test('receives an error when there is a problem GETting links data.', (done) => {
@@ -147,7 +147,7 @@ describe('API service', () => {
       expect(catchFn).toHaveBeenCalledWith(mockError);
       done();
     });
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link?code=${process.env.API_BLOG_KEY}`);
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link`);
 
     jestMockFetch.mockError(mockError);
   });
@@ -158,7 +158,7 @@ describe('API service', () => {
 
     ApiService.addLink(link).then(thenFn).catch(catchFn);
     expect(fetch).toHaveBeenCalledWith(
-      `${process.env.API_URL}link?code=${process.env.API_BLOG_KEY}`,
+      `${process.env.API_URL}link`,
       {
         body: JSON.stringify({
           document: link,
@@ -180,7 +180,7 @@ describe('API service', () => {
       expect(catchFn).toHaveBeenCalledWith(mockError);
       done();
     });
-    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link?code=${process.env.API_BLOG_KEY}`,
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}link`,
     {
       body: JSON.stringify({
         document: link,
