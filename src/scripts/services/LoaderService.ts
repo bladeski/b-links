@@ -41,7 +41,7 @@ class _LoaderService {
   private addLoader(item: LoaderItemModel): HTMLDivElement {
     const loader = document.createElement('div');
     loader.className = 'loader';
-    loader.innerText = `Loading ${item.description}`;
+    loader.textContent = `Loading ${item.description}`;
 
     const notifications = document.querySelector(ElementSelector.LOADER_CONTAINER_ID);
     notifications?.appendChild(loader);

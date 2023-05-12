@@ -1,34 +1,17 @@
-doctype html
-html(lang="en-GB")
-  head
-    include ../templates/head.pug
-  div.page-content
-    include ../templates/header.pug
-    main
-      article
-        hgroup
-          h1 Blog
-          span.subhead A collection of my thoughts...
-        section 
-          each post in posts
-            article.blog-post 
-              hgroup 
-                h2 
-                  a.blog-post-title(href='/src/pages/post/' + new Date(post.createdAt).getFullYear() + '/' + post.name + '.html') #{post.title}
-                  span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
-              p.blog-post-description #{post.description}
-    include ../templates/nav.pug
-    +navbar('blog')
-  include ../templates/footer.pug
-  template#BlogPostListTemplate
-    article.blog-post
-      h2
-        a.blog-post-title
-        span.subhead
-      p.blog-post-description
-  template#BlogPostTemplate
-    article.blog-post
-      hgroup
-        h1.blog-post-title
-        span.subhead
-      section.blog-post-content
+extends ../templates/layout.pug
+
+block content
+  - var pageName = 'blog'
+
+  article
+    hgroup
+      h1 Blog
+      span.subhead A collection of my thoughts...
+    section 
+      each post in posts
+        article.blog-post 
+          hgroup 
+            h2 
+              a.blog-post-title(href='/src/pages/post/' + new Date(post.createdAt).getFullYear() + '/' + post.name + '.html') #{post.title}
+              span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
+          p.blog-post-description #{post.description}
