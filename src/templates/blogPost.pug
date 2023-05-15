@@ -1,20 +1,10 @@
-doctype html
-html(lang="en-GB")
-  head
-    include head.pug
-  div.page-content
-    include header.pug
-    main
-      article
-        hgroup
-          h1 #{title}
-          span.subhead #{description} - #{new Date(createdAt).toLocaleDateString()}
-      section !{post}
-        noscript 
-          section
-          p
-            | This is my blog. Or at least, it's a holding page for it! Unfortunately JavaScript is required 
-            | to view this page in all of its glory and it appears to be disabled in your browser.
-    include nav.pug
-    +navbar('blog')
-  include footer.pug
+extends ../templates/layout.pug
+
+block content
+  - var pageName = 'blog'
+
+  article
+    hgroup
+      h1 #{title}
+      span.subhead #{description} - #{new Date(createdAt).toLocaleDateString()}
+  section !{post}

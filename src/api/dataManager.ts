@@ -2,6 +2,8 @@ import { BlogPostModel, LinkModel } from '../scripts/models';
 import { readFile, writeFile } from 'node:fs';
 
 import { EventEmitter } from 'node:events';
+import { buildLinks } from './buildLinks.js';
+import { buildPosts } from './buildPosts.js';
 
 const BlogPostsFile = 'src/data/blogPosts.json';
 const LinksFile = 'src/data/links.json';
@@ -31,7 +33,10 @@ class _DataManager extends EventEmitter {
         this._blogPosts = blogPosts;
         this._links = links;
         this.ready = true;
-        this.emit('data_manager_ready');
+        Promise.all([
+          buildLinks(links),
+          buildPosts(blogPosts)
+        ]).then(() => this.emit('data_manager_ready'));
       }).catch();
   }
 
