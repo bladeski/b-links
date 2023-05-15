@@ -93,8 +93,3 @@ function onSuccess(res: express.Response, data: any) {
 function onFailure(res: express.Response, error: string) {
   res.status(500).send({ error });
 }
-
-DataManager.isReady().then(() => {
-  buildLinks(DataManager.links);
-  buildPosts(DataManager.blogPosts);
-});

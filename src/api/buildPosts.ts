@@ -5,37 +5,48 @@ import DOMPurify from 'isomorphic-dompurify';
 import { marked } from 'marked';
 import pug from 'pug';
 
-export function buildPosts(posts: BlogPostModel[]) {
-  clearPosts().then(() => {    
-    if (Array.isArray(posts)) {
-      const fn = pug.compileFile('src/templates/blogPost.pug', {});
-      posts.forEach(post => {
-        const year = new Date(post.createdAt || '').getFullYear();
-        const dir = `src/pages/post/${year}`;
+export function buildPosts(posts: BlogPostModel[]): Promise<void> {
+  return new Promise((res, rej) => {
+    clearPosts().then(() => {
+      if (Array.isArray(posts)) {
+        const fn = pug.compileFile('src/templates/blogPost.pug', {});
+        const promises = posts.map(post => writePost(post, fn));
   
-        mkdir(dir, { recursive: true }, (error) => {
-          if (error) {
-            console.log('error');
-          } else {
-            post.post = DOMPurify.sanitize(marked.parse(post.post));
-            writeFile(`${dir}/${post.name || post._id}.html`, fn(post), (error) => {
-              if (error) {
-                console.log(error);
-              }
-            });
-          }
-        });
-      });
+        Promise.all(promises).then(() => {
 
-      const fn1 = pug.compileFile('src/templates/blog.pug', {});
-  
-      writeFile(`src/pages/blog.html`, fn1({posts}), (error) => {
-        if (error) {
-          console.log(error);
-        }
-      });
-    }
+          const fn1 = pug.compileFile('src/templates/blog.pug', {});
+    
+          writeFile(`src/pages/blog.html`, fn1({ posts }), (error) => {
+            if (error) {
+              rej(error);
+            }
+            res();
+          });
+        });
+      }
+    });
   });
+}
+
+function writePost(post: BlogPostModel, fn: pug.compileTemplate): Promise<void> {
+  return new Promise((res, rej) => {
+    const year = new Date(post.createdAt || '').getFullYear();
+    const dir = `src/pages/post/${year}`;
+
+    mkdir(dir, { recursive: true }, (err) => {
+      if (err) {
+        rej(err);
+      } else {
+        post.markup = DOMPurify.sanitize(marked.parse(post.post));
+        writeFile(`${dir}/${post.name || post._id}.html`, fn(post), (error) => {
+          if (error) {
+            rej(error);
+          }
+          res();
+        });
+      }
+    });
+  })
 }
 
 function clearPosts(): Promise<void> {

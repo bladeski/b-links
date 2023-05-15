@@ -3,6 +3,7 @@ export type BlogPostModel = {
   title: string;
   description: string;
   post: string;
+  markup?: string;
   categories: string[];
   createdAt?: Date;
   updatedAt?: Date;
