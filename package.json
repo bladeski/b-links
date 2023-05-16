@@ -19,7 +19,7 @@
     "clean:dist": "rimraf dist",
     "clean:dist-serve": "rimraf dist-serve",
     "clean:dist-serve-management": "rimraf dist-serve-management",
-    "start": "npm run clean:dist-serve && parcel serve --dist-dir dist-serve --no-cache",
+    "start": "npm run clean:dist-serve && ts-node-esm src/api/build.ts && parcel serve --dist-dir dist-serve --no-cache",
     "start:management": "npm run clean:dist-serve-management && parcel serve src/pages/management.pug src/pages/robots.txt --dist-dir dist-serve-management --port 1235",
     "start:api": "ts-node-esm src/api/api.ts",
     "build": "npm run clean:dist && ts-node-esm src/api/build.ts && parcel build --no-source-maps --public-url /b-links --no-cache",

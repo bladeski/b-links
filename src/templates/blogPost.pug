@@ -1,4 +1,4 @@
-extends ../templates/layout.pug
+extends layout.pug
 
 block content
   - var pageName = 'blog'
@@ -7,4 +7,4 @@ block content
     hgroup
       h1 #{title}
       span.subhead #{description} - #{new Date(createdAt).toLocaleDateString()}
-  section !{post}
+  section !{markup}
