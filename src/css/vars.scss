@@ -40,28 +40,26 @@ $danger-colour-background: lighten($danger-colour, 40%);
 $default-transition: 250ms ease-in-out;
 $long-transition: 500ms ease-in-out;
 
-@mixin light-theme-props {
-  --theme-lightness: 24%;
+@mixin theme-props {
   --theme-colour: hsl(var(--theme-hue-saturation), var(--theme-lightness));
-  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 8%));
-  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 20%));
-  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 10%));
-  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 74%));
-  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 70%));
-  --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) + 50%));
-  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 16%));
+  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-1) 8%));
+  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 20%));
+  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 10%));
+  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 74%));
+  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 70%));
+  --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) var(--theme-operand-2) 50%));
+  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-1) 16%));
   --mask-colour: rgba(255,255,255,0.8);
 }
 
-@mixin dark-theme-props {
+@mixin light-theme-operands {
+  --theme-operand-1: -;
+  --theme-operand-2: +;
+  --theme-lightness: 24%;
+}
+
+@mixin dark-theme-operands {
+  --theme-operand-1: +;
+  --theme-operand-2: -;
   --theme-lightness: 76%;
-  --theme-colour: hsl(var(--theme-hue-saturation), var(--theme-lightness));
-  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 8%));
-  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 20%));
-  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 10%));
-  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 74%));
-  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) - 70%));
-  --border-colour: hsl(var(--theme-hue), 20%, calc(var(--theme-lightness) - 50%));
-  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + 16%));
-  --mask-colour: rgba(0,0,0,0.8);
 }
