@@ -40,26 +40,28 @@ $danger-colour-background: lighten($danger-colour, 40%);
 $default-transition: 250ms ease-in-out;
 $long-transition: 500ms ease-in-out;
 
+// $space: 
+
 @mixin theme-props {
   --theme-colour: hsl(var(--theme-hue-saturation), var(--theme-lightness));
-  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-1) 8%));
-  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 20%));
-  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 10%));
-  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 74%));
-  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-2) 70%));
-  --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) var(--theme-operand-2) 50%));
-  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) var(--theme-operand-1) 16%));
+  --primary-font-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-1) * 8%));
+  --link-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-2) * 20%));
+  --link-visited-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-2) * 10%));
+  --background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-2) * 74%));
+  --secondary-background-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-2) * 70%));
+  --border-colour: hsl(var(--theme-hue), 40%, calc(var(--theme-lightness) + var(--theme-operand-2) * 50%));
+  --tooltip-colour: hsl(var(--theme-hue-saturation), calc(var(--theme-lightness) + var(--theme-operand-1) * 16%));
   --mask-colour: rgba(255,255,255,0.8);
 }
 
 @mixin light-theme-operands {
-  --theme-operand-1: -;
-  --theme-operand-2: +;
+  --theme-operand-1: -1;
+  --theme-operand-2: 1;
   --theme-lightness: 24%;
 }
 
 @mixin dark-theme-operands {
-  --theme-operand-1: +;
-  --theme-operand-2: -;
+  --theme-operand-1: 1;
+  --theme-operand-2: -1;
   --theme-lightness: 76%;
 }
