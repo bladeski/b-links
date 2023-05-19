@@ -1,21 +1,22 @@
 @import './vars.scss';
 
 body {
-  @include light-theme-props;
+  @include light-theme-operands;
+
+@include theme-props;
 
   --theme-hue: 230;
   --theme-hue-saturation: var(--theme-hue), 71%;
-
   @media (prefers-color-scheme: dark) {
-    @include dark-theme-props;
+    @include dark-theme-operands;
 
     &.light-mode {
-      @include light-theme-props;
+      @include light-theme-operands;
     }
   }
 
   &.dark-mode {
-    @include dark-theme-props;
+    @include dark-theme-operands;
   }
 }
 
@@ -157,7 +158,7 @@ h3 {
   }
 }
 
-.title,
+.title[aria-label],
 nav ul {
   position: sticky;
   top: 0;
@@ -290,26 +291,11 @@ input {
     &:disabled {
       cursor: default;
 
-      &::-webkit-slider-runnable-track {
-        cursor: default;
-      }
-
-      &::-webkit-slider-thumb {
-        cursor: default;
-      }
-
-      &::-moz-range-track {
-        cursor: default;
-      }
-
-      &::-moz-range-thumb {
-        cursor: default;
-      }
-
-      &::-ms-track {
-        cursor: default;
-      }
-
+      &::-webkit-slider-runnable-track,
+      &::-webkit-slider-thumb,
+      &::-moz-range-track,
+      &::-moz-range-thumb,
+      &::-ms-track,
       &::-ms-thumb {
         cursor: default;
       }
@@ -320,7 +306,7 @@ input {
       height: 8.4px;
 
       border: 0.9px solid var(--background-colour);
-      border-radius: 1.3px;
+      border-radius: 4.2px;
 
       background: var(--link-colour);
 
@@ -347,7 +333,7 @@ input {
       height: 8.4px;
 
       border: 0.9px solid var(--background-color);
-      border-radius: 1.3px;
+      border-radius: 4.2px;
 
       background: var(--link-colour);
 
@@ -433,6 +419,7 @@ header {
 
 main {
   flex: 1 1 auto;
+  padding: 0 $padding-large;
   overflow: auto;
 
   button {
@@ -489,9 +476,6 @@ nav {
 
   li {
     width: 100%;
-
-    color: $primary-font-colour;
-    color: var(--primary-font-colour);
 
     &:hover {
       background-color: $secondary-background-colour;
@@ -577,14 +561,16 @@ kbd {
 }
 
 .subhead {
+  display: flex;
+  justify-content: space-between;
+
   font-size: 1rem;
   font-weight: 400;
 
   opacity: 0.8;
 }
 
-button,
-.tag {
+button {
   border: $border-width $theme-colour solid;
   border-radius: $border-radius;
   border-color: var(--theme-colour);
@@ -601,82 +587,12 @@ button,
   &:not(:disabled):focus-visible {
     border: $border-width $theme-colour solid;
     border-color: var(--theme-colour);
-    // outline: none;
-  }
-}
-
-.tag {
-  display: block;
-  width: 100%;
-  padding: 0;
-
-  background-color: $theme-colour;
-  background-color: var(--theme-colour);
-
-  color: $background-colour;
-  color: var(--background-colour);
-  text-align: left;
-  text-align: center;
-  text-decoration: none;
-
-  &:visited {
-    color: $background-colour;
-    color: var(--background-colour);
-  }
-
-  &:not(:disabled):hover,
-  &:not(:disabled):focus,
-  &:not(:disabled):focus-visible {
-    div:before {
-      left: calc(-1 * $padding-large + 2px);
-    }
-  }
-
-  &:not(:disabled):focus,
-  &:not(:disabled):focus-visible {
-    div:before {
-      left: calc(-1 * $padding-large + $padding-small);
-    }
-  }
-
-  &.selected {
-    background-color: $primary-font-colour;
-    background-color: var(--primary-font-colour);
-  }
-
-  &.selected,
-  &.selected:hover {
-    div:before {
-      left: calc(-1 * $padding-large + $padding-small);
-    }
-  }
-
-  div {
-    position: relative;
-    width: 100%;
-    padding: $padding-small $padding-standard;
-    overflow: hidden;
-
-    border-radius: calc($border-radius - $border-width);
-
-    &:before {
-      position: absolute;
-      top: 0;
-      left: calc(-1 * $padding-large);
-      width: $padding-large;
-      height: 100%;
-
-      background-color: $background-colour;
-      background-color: var(--background-colour);
-
-      content: '';
-      transition: left $default-transition;
-    }
   }
 }
 
 .page-content {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
 
   gap: $padding-large;
@@ -704,9 +620,6 @@ button,
   align-self: center;
   justify-content: center;
   margin-top: $padding-small;
-
-  color: $primary-font-colour;
-  color: var(--primary-font-colour);
 
   opacity: 0.5;
 
@@ -901,20 +814,6 @@ button,
         background-color: $danger-colour-background;
       }
     }
-
-    .close {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 0.5rem;
-
-      border: none;
-
-      background: none;
-
-      font-size: $font-size-s;
-      line-height: $font-size-regular;
-    }
   }
 
   details {
@@ -945,14 +844,26 @@ button,
       padding: $padding-small $padding-standard;
     }
   }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+
+    border: none;
+
+    background: none;
+
+    font-size: $font-size-s;
+    line-height: $font-size-regular;
+  }
 }
 
 ::-webkit-scrollbar-track {
   border-radius: $border-radius;
 
   background-color: transparent;
-
-  // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
 
 ::-webkit-scrollbar {
@@ -984,8 +895,12 @@ button,
   }
 }
 
-@media screen and (min-width: 860px) {
+@media screen and (min-width: 1024px) {
   $section-margin-right: 5vw;
+
+  main {
+    padding: unset;
+  }
 
   section {
     margin-right: $section-margin-right;
@@ -997,12 +912,12 @@ button,
     flex-direction: row;
   }
 
-  .tag {
-    text-align: left;
+  .page-content {
+    flex-direction: row;
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1600px) {
   $section-margin-right: 10vw;
 
   html,
