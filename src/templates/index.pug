@@ -1,0 +1,24 @@
+extends ../templates/layout.pug
+
+block header 
+  div
+
+block content
+  - var pageName = 'index'
+
+    div
+    main
+      article
+        hgroup
+          h1 b-links
+          span.subhead A curated list of useful links...
+        section
+          h2 Latest Posts
+          div.latest-posts
+            each post in posts
+              - var date = new Date(post.createdAt)
+              a.post(href='/src/pages/post/' + date.getFullYear() + '/' + post.name + '.html')
+                h3
+                  | #{post.title} 
+                  span.subhead= date.toDateString()
+                p= post.description
