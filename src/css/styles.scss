@@ -7,6 +7,7 @@ body {
 
   --theme-hue: 230;
   --theme-hue-saturation: var(--theme-hue), 71%;
+
   @media (prefers-color-scheme: dark) {
     @include dark-theme-operands;
 
@@ -611,6 +612,40 @@ button {
 .settings {
   &.hide {
     display: none;
+  }
+}
+
+.latest-posts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: max-content;
+  max-width: 100%;
+
+  gap: $padding-standard;
+
+  h3 {
+    flex-direction: column;
+  }
+
+  .post {
+    flex-grow: 1;
+    padding: $padding-standard;
+
+    border: $border-width $theme-colour solid;
+    border-radius: $border-radius;
+    border-color: var(--theme-colour);
+
+    text-decoration: none;
+
+    &:hover {
+      background-color: $theme-colour;
+      background-color: var(--theme-colour);
+
+      color: $background-colour;
+      color: var(--background-colour);
+    }
   }
 }
 

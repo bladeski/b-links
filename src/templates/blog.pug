@@ -9,9 +9,10 @@ block content
       span.subhead A collection of my thoughts...
     section 
       each post in posts
+        - var date = new Date(post.createdAt)
         article.blog-post 
           hgroup 
             h2 
-              a.blog-post-title(href='/src/pages/post/' + new Date(post.createdAt).getFullYear() + '/' + post.name + '.html') #{post.title}
-              span.subhead First posted #{new Date(post.createdAt).toLocaleDateString()}
+              a.blog-post-title(href='/src/pages/post/' + date.getFullYear() + '/' + post.name + '.html') #{post.title}
+              span.subhead First posted #{date.toDateString()}
           p.blog-post-description #{post.description}
