@@ -2,10 +2,10 @@ mixin navbar(currentPage)
   nav
     ul
       if currentPage !== 'management'
-        li(class={ selected: currentPage === 'links'})
-          a.nav-item(href="/src/pages/links.html" aria-label="Useful links.") links
         li(class={ selected: currentPage === 'blog'})
           a.nav-item(href="/src/pages/blog.html" aria-label="My blog.") blog
+        li(class={ selected: currentPage === 'links'})
+          a.nav-item(href="/src/pages/links.html" aria-label="Useful links.") links
         li(class={ selected: currentPage === 'about'})
           a.nav-item(href="/src/pages/about.pug" aria-label="About b-links.") about
       li

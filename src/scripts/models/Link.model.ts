@@ -5,9 +5,16 @@ export type LinkModel = {
   categories?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  
 };
 
 export type LinkGroupModel = {
   category: string;
   links: LinkModel[];
+}
+
+export type LinkSectionModel = {
+  title: string;
+  shortTitle: string;
+  links: LinkModel[]
 }
