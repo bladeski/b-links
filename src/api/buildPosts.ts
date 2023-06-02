@@ -22,16 +22,6 @@ export function buildPosts(posts: BlogPostModel[]): Promise<void> {
             }
             res();
           });
-
-          const fn2 = pug.compileFile('src/templates/index.pug', {});
-          const latestPosts = posts.slice(-5).reverse();
-    
-          writeFile(`src/pages/index.html`, fn2({ posts: latestPosts }), (error) => {
-            if (error) {
-              rej(error);
-            }
-            res();
-          });
         });
       }
     });

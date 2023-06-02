@@ -22,3 +22,9 @@ block content
                   | #{post.title} 
                   span.subhead= date.toDateString()
                 p= post.description
+
+          h2 Link Categories 
+          ul.link-categories 
+            each section in links
+              li
+                a.category(href=`/src/pages/links.html#${section.shortTitle}`)= section.title
