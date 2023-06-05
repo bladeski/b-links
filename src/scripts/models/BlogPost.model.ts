@@ -8,6 +8,7 @@ export type BlogPostModel = {
   createdAt?: Date;
   updatedAt?: Date;
   name?: string;
+  draft?: boolean;
 };
 
 export function getPostName(post: BlogPostModel): string {

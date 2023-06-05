@@ -6,7 +6,10 @@ export class LoggingService {
   static logEvent(event: EventLogModel) {
     console[event.type](event.title, event.description, event.details);
     if (event.showNotification) {
-      NotificationService.showNotification(event);
+      NotificationService.showNotification({
+        ...event,
+        autoClose: true
+      });
     }
   }
 

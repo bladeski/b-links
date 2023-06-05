@@ -9,14 +9,16 @@ export function buildPosts(posts: BlogPostModel[]): Promise<void> {
   return new Promise((res, rej) => {
     clearPosts().then(() => {
       if (Array.isArray(posts)) {
+        const publishedPosts = posts.filter(post => !post.draft);
         const fn = pug.compileFile('src/templates/blogPost.pug', {});
-        const promises = posts.map(post => writePost(post, fn));
+        const promises = publishedPosts
+          .map(post => writePost(post, fn));
   
         Promise.all(promises).then(() => {
 
           const fn1 = pug.compileFile('src/templates/blog.pug', {});
     
-          writeFile(`src/pages/blog.html`, fn1({ posts }), (error) => {
+          writeFile(`src/pages/blog.html`, fn1({ posts: publishedPosts }), (error) => {
             if (error) {
               rej(error);
             }

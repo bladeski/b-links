@@ -14,7 +14,6 @@ export default class ManagementService {
   private postTypeForm: HTMLFormElement | null;
   private postForm: HTMLFormElement | null;
   private linkForm: HTMLFormElement | null;
-  private blogPosts: BlogPostModel[] = [];
   private blogFormType: FormType = FormType.ADD;
 
   constructor() {
@@ -66,6 +65,20 @@ export default class ManagementService {
     }
   }
 
+  private resetPostTypeForm() {
+    this.postForm?.reset();
+    const selectInput = this.postTypeForm?.querySelector(
+      'select'
+    ) as HTMLSelectElement;
+    const idInput = this.postForm?.querySelector(
+      'input[name="id"]'
+    ) as HTMLInputElement;
+    this.blogFormType = FormType.ADD;
+    idInput.value = '';
+    selectInput.disabled = true;
+    ApiService.getBlogPosts().then(this.onGetBlogPosts.bind(this));
+  }
+
   private onSubmitPostForm(event: SubmitEvent) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
@@ -78,15 +91,18 @@ export default class ManagementService {
       description: formData.get('description')?.toString() || '',
       post: formData.get('post')?.toString() || '',
       categories: formData.get('categories')?.toString().split(' ') || [],
+      draft: !!formData.get('draft')
     };
     ApiService.addBlogPost(post, id).then(() => {
       NotificationService.showNotification({
-        title: 'Blog Post Saved',
-        description: 'Successfully saved new blog post.',
-        type: EventLogType.SUCCESS
+        title: `${post.draft ? 'Draft ' : ''}Blog Post Saved`,
+        description: `Successfully saved ${post.draft ? 'draft' : 'new'} blog post.`,
+        type: EventLogType.SUCCESS,
+        autoClose: true
       });
 
-      this.postForm?.reset();
+      this.postTypeForm?.reset();
+      this.resetPostTypeForm();
       const preview = document.getElementById('PostPreview') as HTMLElement;
       preview.innerHTML = '';
       localStorage.removeItem('postDraft');
@@ -111,7 +127,8 @@ export default class ManagementService {
       NotificationService.showNotification({
         title: 'Link Saved',
         description: 'Successfully saved new link.',
-        type: EventLogType.SUCCESS
+        type: EventLogType.SUCCESS,
+        autoClose: true
       });
       this.linkForm?.reset();
     }).catch(err => 
@@ -145,12 +162,12 @@ export default class ManagementService {
   }
 
   private onGetBlogPosts(posts: BlogPostModel[]) {
-    this.blogPosts = posts;
     const selectElement = this.postTypeForm?.querySelector('select');
+    selectElement?.replaceChildren();
     posts.forEach((post) => {
       const option = document.createElement('option');
       option.value = post._id || '';
-      option.text = `${post.title}`;
+      option.text = `${post.draft ? 'DRAFT - ' : ''}${post.title}`;
       selectElement?.appendChild(option);
     });
   }
@@ -175,12 +192,16 @@ export default class ManagementService {
       const idInput = this.postForm?.querySelector(
         'input[name="id"]'
       ) as HTMLInputElement;
+      const saveDraftInput = this.postForm?.querySelector(
+        'input[name="draft"]'
+      ) as HTMLInputElement;
 
       titleInput.value = selectedPost.title;
       descriptionInput.value = selectedPost.description;
       contentInput.value = selectedPost.post;
       categoriesInput.value = selectedPost.categories.join(' ');
       idInput.value = selectedPost._id || '';
+      saveDraftInput.checked = selectedPost.draft || false;
 
       this.updatePreview(selectedPost.post);
     }

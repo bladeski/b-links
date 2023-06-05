@@ -34,12 +34,14 @@ class _DataManager extends EventEmitter {
         this._blogPosts = blogPosts;
         this._links = links;
         this.ready = true;
+
+        const publishedBlogPosts = blogPosts.filter(blogPost => !blogPost.draft);
         Promise
           .all([
             buildLinks(links),
-            buildPosts(blogPosts)
+            buildPosts(publishedBlogPosts)
           ])
-          .then(([sections]) => buildIndex(blogPosts, sections))
+          .then(([sections]) => buildIndex(publishedBlogPosts, sections))
           .then(() => this.emit('data_manager_ready'));
       }).catch();
   }

@@ -53,6 +53,7 @@ app.put('/blogPost/:id', (req, res) => {
     existingPost.post = updatedPost.post;
     existingPost.categories = updatedPost.categories;
     existingPost.updatedAt = new Date();
+    existingPost.draft = updatedPost.draft;
 
     DataManager
       .updateBlogPost(existingPost)
