@@ -643,7 +643,7 @@ button {
   .post,
   .category {
     flex-grow: 1;
-    padding: $padding-standard;
+    padding: $padding-small $padding-standard;
 
     border: $border-width $theme-colour solid;
     border-radius: $border-radius;
