@@ -106,32 +106,6 @@ h3 {
   font-size: $font-size-l;
 }
 
-.title {
-  margin-left: $padding-large;
-
-  font-size: $font-size-xl;
-  font-weight: 900;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:visited,
-  &:active,
-  &:focus {
-    color: $primary-font-colour;
-    color: var(--primary-font-colour);
-    text-decoration: none;
-  }
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &[aria-label]:hover:after {
-    top: unset;
-    bottom: -$padding-standard;
-  }
-}
-
 .nav-item {
   align-items: flex-end;
   width: 100%;
@@ -156,6 +130,30 @@ h3 {
     border: none;
 
     color: inherit;
+  }
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:visited,
+  &:active,
+  &:focus {
+    color: $primary-font-colour;
+    color: var(--primary-font-colour);
+    text-decoration: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &[aria-label]:hover:after {
+    top: unset;
+    bottom: -$padding-standard;
   }
 }
 
@@ -420,8 +418,9 @@ header {
 
 main {
   flex: 1 1 auto;
+  margin-left: $padding-large;
   padding: 0 $padding-large;
-  overflow: auto;
+  overflow: hidden;
 
   button {
     padding: $padding-small $padding-standard;

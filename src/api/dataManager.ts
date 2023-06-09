@@ -31,7 +31,7 @@ class _DataManager extends EventEmitter {
     super();
     Promise.all([this.getBlogPostsFromFile(), this.getLinksFromFile()])
       .then(([blogPosts, links]) => {
-        this._blogPosts = blogPosts;
+        this._blogPosts = blogPosts.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
         this._links = links;
         this.ready = true;
 
@@ -91,7 +91,7 @@ class _DataManager extends EventEmitter {
   public addBlogPost(post: BlogPostModel): Promise<BlogPostModel[]> {
     this._blogPosts.push(post);
     return new Promise((res, rej) =>
-      writeFile(BlogPostsFile, JSON.stringify(this._blogPosts), (err) => {
+      writeFile(BlogPostsFile, JSON.stringify(this._blogPosts.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())), (err) => {
         if (err) {
           rej(err);
         } else {
@@ -105,7 +105,7 @@ class _DataManager extends EventEmitter {
     const index = this._blogPosts.findIndex(blogPost => blogPost._id === post._id);
     this._blogPosts[index] = post;
     return new Promise((res, rej) =>
-      writeFile(BlogPostsFile, JSON.stringify(this._blogPosts), (err) => {
+      writeFile(BlogPostsFile, JSON.stringify(this._blogPosts.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())), (err) => {
         if (err) {
           rej(err);
         } else {

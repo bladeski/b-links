@@ -52,6 +52,7 @@ app.put('/blogPost/:id', (req, res) => {
     existingPost.description = updatedPost.description;
     existingPost.post = updatedPost.post;
     existingPost.categories = updatedPost.categories;
+    existingPost.createdAt = existingPost.draft ? new Date() : existingPost.createdAt;
     existingPost.updatedAt = new Date();
     existingPost.draft = updatedPost.draft;
 

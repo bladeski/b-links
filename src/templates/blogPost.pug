@@ -2,11 +2,12 @@ extends layout.pug
 
 block content
   - var pageName = 'blog'
+  - var date = new Date(createdAt)
 
   article
     hgroup
       h1= title
       span.subhead 
         span= description
-        span= new Date(createdAt).toDateString()
+        span= date.toDateString()
   section !{markup}
