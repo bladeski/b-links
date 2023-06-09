@@ -6,9 +6,8 @@ import { writeFile } from 'node:fs';
 export function buildIndex(posts: BlogPostModel[], links: LinkSectionModel[]): Promise<void> {
   return new Promise((res, rej) => {
     const fn2 = pug.compileFile('src/templates/index.pug', {});
-    const latestPosts = posts.slice(-5).reverse();
 
-    writeFile(`src/pages/index.html`, fn2({ posts: latestPosts, links }), (error) => {
+    writeFile(`src/pages/index.html`, fn2({ posts, links }), (error) => {
       if (error) {
         rej(error);
       }

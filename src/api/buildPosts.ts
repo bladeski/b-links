@@ -9,7 +9,7 @@ export function buildPosts(posts: BlogPostModel[]): Promise<void> {
   return new Promise((res, rej) => {
     clearPosts().then(() => {
       if (Array.isArray(posts)) {
-        const publishedPosts = posts.filter(post => !post.draft);
+        const publishedPosts = posts.filter(post => !post.draft).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
         const fn = pug.compileFile('src/templates/blogPost.pug', {});
         const promises = publishedPosts
           .map(post => writePost(post, fn));

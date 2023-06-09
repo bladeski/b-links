@@ -1,0 +1,20 @@
+mixin linkCategories(categories)
+  section 
+    h2 Link Categories 
+    ul.link-categories 
+      each category in categories
+        li
+          a.category(href=`/src/pages/links.html#${category.shortTitle}`)= category.title
+
+mixin latestPosts(posts)
+  section
+    h2 Latest Posts
+    div.latest-posts
+      each post, index in posts
+        if index < 5
+          - var date = new Date(post.createdAt)
+          a.post(href='/src/pages/post/' + date.getFullYear() + '/' + post.name + '.html')
+            h3
+              | #{post.title} 
+              span.subhead= date.toDateString()
+            p= post.description
