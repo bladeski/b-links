@@ -12,15 +12,6 @@ export function buildLinks(links: LinkModel[]): Promise<LinkSectionModel[]> {
       shortTitle: category.replace(/(^\W*)|(\W*$)/g, '').replace(/[\W_]+/g,"-").toLowerCase(),
       links: links.filter(link => link.categories?.includes(category))
     })).sort((a, b) => a.title.localeCompare(b.title));
-    const misc = links.filter(link => !link.categories || link.categories.length === 0);
-  
-    if (misc.length) {
-      sections.push({
-        title: 'Misc.',
-        shortTitle: 'misc',
-        links: misc
-      });
-    }
     
     const fn = pug.compileFile('src/templates/links.pug', {});
   

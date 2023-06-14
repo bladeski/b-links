@@ -53,4 +53,26 @@ describe('Notification service', () => {
 
     expect(dialog?.open).toBe(false);
   });
+
+  test('a notification is closed when autoclose is enabled', () => {
+    jest.useFakeTimers();
+
+    NotificationService.showNotification({
+      title: 'Test Notification.',
+      description: 'This is a test notification.',
+      type: EventLogType.INFO,
+      autoClose: true
+    });
+
+    const notifications = document.getElementById('Notifications')
+      ?.querySelectorAll('dialog');
+    expect(notifications).toHaveLength(1);
+
+    const dialog = notifications ? notifications[0] as HTMLDialogElement : null;
+    expect(dialog?.open).toBe(true);
+
+    jest.runAllTimers();
+
+    expect(dialog?.open).toBe(false);
+  });
 });

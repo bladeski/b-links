@@ -1,9 +1,9 @@
 mixin navbar(currentPage)
   nav
     ul
-      li(class={selected: currentPage === 'index'})
-        a.title.nav-item(href="/src/pages/index.html" aria-label="b-links home.") b-links
       if currentPage !== 'management'
+        li(class={selected: currentPage === 'index'})
+          a.title.nav-item(href="/src/pages/index.html" aria-label="b-links home.") b-links
         li(class={ selected: currentPage === 'blog'})
           a.nav-item(href="/src/pages/blog.html" aria-label="My blog.") blog
         li(class={ selected: currentPage === 'links'})
