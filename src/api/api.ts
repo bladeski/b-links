@@ -1,12 +1,10 @@
 import {
   BlogPostModel,
   getPostName,
-} from '../scripts/models/BlogPost.model.js';
+} from '../scripts/models/BlogPost.model';
 
-import DataManager from './dataManager.js';
+import DataManager from './dataManager';
 import { LinkModel } from '../scripts/models/Link.model';
-import { buildLinks } from './buildLinks.js';
-import { buildPosts } from './buildPosts.js';
 import cors from 'cors';
 import express from 'express';
 
@@ -29,15 +27,12 @@ app.get('/blogPost/:id', (req, res) => {
 app.post('/blogPost', (req, res) => {
   const post = req.body.document;
   const created = new Date();
-  const id = `${created.getTime()}${Math.floor(Math.random() * 1000)}`;
-  post._id = id;
   post.createdAt = created;
   post.updatedAt = created;
   post.name = getPostName(post);
 
   DataManager
     .addBlogPost(post)
-    .then(buildPosts)
     .then(() => onSuccess(res, post))
     .catch(() => onFailure(res, 'There was a problem saving the post.'));
 });
@@ -58,7 +53,6 @@ app.put('/blogPost/:id', (req, res) => {
 
     DataManager
       .updateBlogPost(existingPost)
-      .then(buildPosts)
       .then(() => onSuccess(res, existingPost))
       .catch(Promise.reject);
   } else {
@@ -76,13 +70,23 @@ app.post('/link', (req, res) => {
   const link = req.body.document as LinkModel;
   DataManager
     .addLink(link)
-    .then(buildLinks)
     .then(() => onSuccess(res, link))
     .catch((err) => {
       console.log(err);
       onFailure(res, 'There was a problem saving the link.');
     });
 });
+
+app.delete('/link/:id', (req, res) => {
+  const linkId = req.params.id;
+  DataManager
+    .removeLink(linkId)
+    .then((links) => onSuccess(res, links))
+    .catch((err) => {
+      console.log(err);
+      onFailure(res, 'There was a problem deleting the link.');
+    });
+})
 
 app.listen(port, () => {
   console.log(`API started on port ${port}`);
