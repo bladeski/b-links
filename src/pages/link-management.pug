@@ -1,0 +1,19 @@
+extends ../templates/layout.pug
+
+block content
+  - var pageName = 'link-management'
+    h1 Link Management
+    article 
+      h2 Add Link 
+      form#LinkForm
+        label Link Title *
+          input(name="title" aria-label="Title for link" type="text" required)
+        label Link URL *
+          input(name="url" aria-label="URL for link" type="text" required)
+        label Link Categories
+          input(name="categories" aria-label="Categories for link" type="text")
+        button(type="submit" aria-label="Submit link") Submit
+
+block scripts 
+  script(src="../scripts/management.ts" type="module")
+  link(rel="stylesheet" href="/src/css/management.scss")

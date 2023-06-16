@@ -1,8 +1,8 @@
 extends ../templates/layout.pug
 
 block content
-  - var pageName = 'management'
-    h1 Management
+  - var pageName = 'blog-management'
+    h1 Blog Management
     article
       h2 Blog Post 
       form#PostTypeForm.post-form-type-selection
@@ -27,16 +27,6 @@ block content
         label Save Draft 
           input(name="draft" aria-label="Save post as a draft" type="checkbox" checked)
         button(type="submit" aria-label="Submit post") Submit
-    article 
-      h2 Add Link 
-      form#LinkForm
-        label Link Title *
-          input(name="title" aria-label="Title for link" type="text" required)
-        label Link URL *
-          input(name="url" aria-label="URL for link" type="text" required)
-        label Link Categories
-          input(name="categories" aria-label="Categories for link" type="text")
-        button(type="submit" aria-label="Submit link") Submit
 
 block scripts 
   script(src="../scripts/management.ts" type="module")
