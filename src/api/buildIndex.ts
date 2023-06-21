@@ -7,7 +7,7 @@ export function buildIndex(posts: BlogPostModel[], links: LinkSectionModel[]): P
   return new Promise((res, rej) => {
     const fn2 = pug.compileFile('src/templates/index.pug', {});
 
-    writeFile(`src/pages/index.html`, fn2({ posts, links }), (error) => {
+    writeFile(`src/pages/index.html`, fn2({ process, posts, links }), (error) => {
       if (error) {
         rej(error);
       }

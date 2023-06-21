@@ -19,9 +19,15 @@ app.get('/blogPost', (req, res) => {
 });
 
 app.get('/blogPost/:id', (req, res) => {
-  res.send(
-    DataManager.blogPosts.find((blogPost) => blogPost._id === req.params.id)
-  );
+  const post = DataManager.blogPosts.find((blogPost) => blogPost._id === req.params.id);
+
+  if (post) {
+    res.send(
+      post
+    );
+  } else {
+    onFailure(res, 404, 'The post does not exist.')
+  }
 });
 
 app.post('/blogPost', (req, res) => {
@@ -34,7 +40,7 @@ app.post('/blogPost', (req, res) => {
   DataManager
     .addBlogPost(post)
     .then(() => onSuccess(res, post))
-    .catch(() => onFailure(res, 'There was a problem saving the post.'));
+    .catch((err) => onFailure(res, 500, 'There was a problem saving the post.', err));
 });
 
 app.put('/blogPost/:id', (req, res) => {
@@ -54,11 +60,9 @@ app.put('/blogPost/:id', (req, res) => {
     DataManager
       .updateBlogPost(existingPost)
       .then(() => onSuccess(res, existingPost))
-      .catch(Promise.reject);
+      .catch((err) => onFailure(res, 500, 'There was a problem saving the post.', err));
   } else {
-    Promise.reject("The post doesn't exist.");
-    console.error(updatedPost);
-    res.sendStatus(404);
+    onFailure(res, 404, 'The post does not exist.');
   }
 });
 
@@ -72,8 +76,7 @@ app.post('/link', (req, res) => {
     .addLink(link)
     .then(() => onSuccess(res, link))
     .catch((err) => {
-      console.log(err);
-      onFailure(res, 'There was a problem saving the link.');
+      onFailure(res, 500, 'There was a problem saving the link.', err);
     });
 });
 
@@ -83,8 +86,7 @@ app.delete('/link/:id', (req, res) => {
     .removeLink(linkId)
     .then((links) => onSuccess(res, links))
     .catch((err) => {
-      console.log(err);
-      onFailure(res, 'There was a problem deleting the link.');
+      onFailure(res, 500, 'There was a problem deleting the link.', err);
     });
 })
 
@@ -96,6 +98,9 @@ function onSuccess(res: express.Response, data: any) {
   res.status(200).send(data);
 }
 
-function onFailure(res: express.Response, error: string) {
-  res.status(500).send({ error });
+function onFailure(res: express.Response, status: number, errorMessage: string, error?: any) {
+  res.status(status).send({ error: errorMessage });
+  console.groupCollapsed(errorMessage);
+  console.error(error || errorMessage);
+  console.groupEnd();
 }

@@ -4,34 +4,39 @@
   "description": "A curated list of useful links.",
   "author": "Jonathan Blades",
   "license": "MIT",
-  "source": "src/pages/index.html",
   "targets": {
-    "default": {
+    "production": {
       "source": [
         "src/pages/index.html",
         "src/pages/robots.txt"
       ],
-      "distDir": "dist"
+      "publicUrl": "/b-links",
+      "sourceMap": false
+    },
+    "dev": {
+      "source": [
+        "src/pages/index.html",
+        "src/pages/blog-management.pug",
+        "src/pages/robots.txt"
+      ]
     }
   },
   "type": "module",
   "scripts": {
-    "clean:dist": "rimraf dist",
-    "clean:dist-serve": "rimraf dist-serve",
-    "clean:dist-serve-management": "rimraf dist-serve-management",
-    "start": "npm run clean:dist-serve && parcel serve --dist-dir dist-serve --no-cache --open",
-    "start:management": "npm run clean:dist-serve-management && parcel serve src/pages/management.pug src/pages/robots.txt --dist-dir dist-serve-management --port 1235 --open",
+    "start": "rimraf dist-dev && parcel serve --target dev --dist-dir dist/dev --no-cache --open",
+    "start:management": "rimraf dist-dev && parcel serve --target dev --target management --dist-dir dist/dev --no-cache --open",
     "start:api": "ts-node-esm src/api/api.ts",
-    "start:all": "concurrently \"yarn start\" \"yarn start:api\" \"yarn start:management\" --restart-tries 3",
-    "build": "npm run clean:dist && ts-node-esm src/api/build.ts && parcel build --no-source-maps --public-url /b-links --no-cache",
+    "start:all": "env NODE_ENV=development yarn build:links-posts && env NODE_ENV=development concurrently \"yarn start:management\" \"yarn start:api\" --restart-tries 3",
+    "build:links-posts": "ts-node-esm src/api/build.ts",
+    "build": "rimraf dist/production && yarn build:links-posts && parcel build --target production --no-cache",
     "test": "jest"
   },
   "browserslist": "since 2015",
   "devDependencies": {
-    "@parcel/packager-raw-url": "2.8.3",
-    "@parcel/transformer-pug": "2.8.3",
-    "@parcel/transformer-sass": "2.8.3",
-    "@parcel/transformer-webmanifest": "2.8.3",
+    "@parcel/packager-raw-url": "2.9.2",
+    "@parcel/transformer-pug": "2.9.2",
+    "@parcel/transformer-sass": "2.9.2",
+    "@parcel/transformer-webmanifest": "2.9.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.1.2",
@@ -44,7 +49,7 @@
     "jest": "^29.1.2",
     "jest-environment-jsdom": "^29.1.2",
     "jest-mock-fetch": "^2.0.5",
-    "parcel": "^2.7.0",
+    "parcel": "^2.9.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.1",

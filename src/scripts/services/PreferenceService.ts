@@ -179,13 +179,13 @@ export default class PreferenceService {
   private initialiseForm() {
     const prefs = this.getPrefs();
 
-    const settingsButton = document.querySelector(ElementSelector.PREF_TOGGLE_CLASS) as HTMLButtonElement;
-    settingsButton.addEventListener('click', (ev: MouseEvent) => {
-      this.updatePref(
-        Preference.SHOW_PREFERENCES,
-        !this.currentPrefs.showPreferences
-      );
-    });
+    // const settingsButton = document.querySelector(ElementSelector.PREF_TOGGLE_CLASS) as HTMLButtonElement;
+    // settingsButton.addEventListener('click', (ev: MouseEvent) => {
+    //   this.updatePref(
+    //     Preference.SHOW_PREFERENCES,
+    //     !this.currentPrefs.showPreferences
+    //   );
+    // });
 
     const dyslexicStyleSelector = this.preferenceForm?.querySelector(
       '[name="showDyslexicStyles"]'

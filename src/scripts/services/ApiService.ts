@@ -99,6 +99,28 @@ export default class ApiService {
     });
   }
 
+  static deleteLink(linkId: string): Promise<LinkModel> {
+    return new Promise((res, rej) => {
+      fetch(
+        `${process.env.API_URL}link/${linkId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+        .then(this.getResponseJson)
+        .then((result) => res(result))
+        .catch(err => this.logError(
+          'Unable to add link.',
+          'We had a technical issue trying to add the link. Please try again.',
+          err,
+          rej
+        ));
+    });
+  }
+
   private static async logError(title: string, description: string, error: Response, rej: (reason: any) => void) {
     LoggingService.logEvent({
       title,

@@ -3,7 +3,9 @@
 doctype html
 html(lang="en-GB")
   head
+    block head
     include head.pug
+    +head(pageName)
   body
     .page-content
       main

@@ -1,16 +1,6 @@
 @import './vars.scss';
 
 body {
-  @media screen and (min-width: 1024px) {
-    header,
-    nav,
-    main,
-    footer.content,
-    #Preferences {
-      padding: $padding-small $padding-large;
-    }
-  }
-
   main {
     form {
       display: grid;
@@ -66,6 +56,39 @@ body {
         height: fit-content;
 
         justify-self: flex-end;
+
+        &[type='submit'] {
+          background-color: $theme-colour;
+          background-color: var(--theme-colour);
+
+          color: $background-colour;
+          color: var(--background-colour);
+        }
+      }
+    }
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+
+    gap: $padding-small;
+
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: $padding-small;
+
+      gap: $padding-large;
+
+      &:hover {
+        background-color: $secondary-background-colour;
+        background-color: var(--secondary-background-colour);
+      }
+
+      .link-categories {
+        flex-grow: 1;
       }
     }
   }
