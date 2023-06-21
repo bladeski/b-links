@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: './dist/'
+          path: './dist/production'
           
       - name: Deploy to GitHub Pages
         id: deployment
@@ -63,6 +63,6 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1.11.1
         with:
-          artifacts: './dist/'
+          artifacts: './dist/production'
           generateReleaseNotes: true
           tag: ${{ steps.version-bump.outputs.newTag }}
