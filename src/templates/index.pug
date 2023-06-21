@@ -1,8 +1,10 @@
 extends ../templates/layout.pug
 include ../templates/mixins.pug
 
+block head 
+  - var pageName = 'home'
+
 block content
-  - var pageName = 'index'
   article
     hgroup
       h1 b-links

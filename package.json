@@ -16,24 +16,19 @@
     "dev": {
       "source": [
         "src/pages/index.html",
-        "src/pages/robots.txt"
-      ],
-      "distDir": "dist/dev"
-    },
-    "management": {
-      "source": [
         "src/pages/blog-management.pug",
         "src/pages/robots.txt"
-      ],
-      "distDir": "dist/management"
+      ]
     }
   },
   "type": "module",
   "scripts": {
-    "start": "rimraf dist && parcel serve --target dev --target management --no-cache",
+    "start": "rimraf dist-dev && parcel serve --target dev --dist-dir dist/dev --no-cache --open",
+    "start:management": "rimraf dist-dev && parcel serve --target dev --target management --dist-dir dist/dev --no-cache --open",
     "start:api": "ts-node-esm src/api/api.ts",
-    "start:all": "concurrently \"yarn start\" \"yarn start:api\" --restart-tries 3",
-    "build": "ts-node-esm src/api/build.ts && parcel build --target production --no-cache",
+    "start:all": "env NODE_ENV=development yarn build:links-posts && env NODE_ENV=development concurrently \"yarn start:management\" \"yarn start:api\" --restart-tries 3",
+    "build:links-posts": "ts-node-esm src/api/build.ts",
+    "build": "rimraf dist/production && yarn build:links-posts && parcel build --target production --no-cache",
     "test": "jest"
   },
   "browserslist": "since 2015",

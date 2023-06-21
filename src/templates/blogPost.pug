@@ -1,9 +1,10 @@
 extends layout.pug
 
-block content
-  - var pageName = 'blog'
-  - var date = new Date(createdAt)
+block head 
+  - var pageName = title
 
+block content
+  - var date = new Date(createdAt)
   article
     hgroup
       h1= title

@@ -1,8 +1,8 @@
 mixin navbar(currentPage)
   nav
-    ul
-      if currentPage !== 'blog-management' && currentPage !== 'link-management'
-        li(class={selected: currentPage === 'index'})
+    div.nav-container
+      ul
+        li(class={selected: currentPage === 'home'})
           a.title.nav-item(href="/src/pages/index.html" aria-label="b-links home.") b-links
         li(class={ selected: currentPage === 'blog'})
           a.nav-item(href="/src/pages/blog.html" aria-label="My blog.") blog
@@ -10,14 +10,17 @@ mixin navbar(currentPage)
           a.nav-item(href="/src/pages/links.html" aria-label="Useful links.") links
         li(class={ selected: currentPage === 'about'})
           a.nav-item(href="/src/pages/about.pug" aria-label="About b-links.") about
-      else 
-        li(class={selected: currentPage === 'blog-management'})
-          a.nav-item(href="/src/pages/blog-management.pug" aria-label="Blog Management.") blog
-        li(class={ selected: currentPage === 'link-management'})
-          a.nav-item(href="/src/pages/link-management.pug" aria-label="Link Management.") links
-      li
-        button.nav-item.settings.hide(aria-label="View settings.") settings
-        form#Preferences.hide
+      if process.env.NODE_ENV === 'development'
+        details(open=currentPage.includes('management'))
+          summary.nav-item management
+          ul
+            li(class={selected: currentPage === 'blog management'})
+              a.nav-item(href="/src/pages/blog-management.pug" aria-label="Blog Management.") blog
+            li(class={ selected: currentPage === 'link management'})
+              a.nav-item(href="/src/pages/link-management.pug" aria-label="Link Management.") links
+      details
+        summary.nav-item settings
+        form#Preferences
           label Use Dyslexic Styles
             input(name="showDyslexicStyles" aria-label="Use dyslexic styles" type="checkbox")
           label Load Web Fonts

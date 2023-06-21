@@ -33,6 +33,7 @@ export default class ManagementService {
     postInput?.addEventListener('input', this.onUpdatePostInput.bind(this));
 
     ApiService.getBlogPosts().then(this.onGetBlogPosts.bind(this));
+    ApiService.getLinks().then(this.onGetLinks.bind(this));
   }
 
   private onEditPostTypeForm(event: Event) {
@@ -163,13 +164,62 @@ export default class ManagementService {
 
   private onGetBlogPosts(posts: BlogPostModel[]) {
     const selectElement = this.postTypeForm?.querySelector('select');
-    selectElement?.replaceChildren();
-    posts.forEach((post) => {
-      const option = document.createElement('option');
-      option.value = post._id || '';
-      option.text = `${post.draft ? 'DRAFT - ' : ''}${post.title}`;
-      selectElement?.appendChild(option);
-    });
+
+    if (selectElement) {
+      selectElement?.replaceChildren();
+      posts.forEach((post) => {
+        const option = document.createElement('option');
+        option.value = post._id || '';
+        option.text = `${post.draft ? 'DRAFT - ' : ''}${post.title}`;
+        selectElement?.appendChild(option);
+      });
+    }
+  }
+
+  private onGetLinks(links: LinkModel[]) {
+    const linksElement = document.querySelector('.links');
+
+    if (linksElement) {
+      const forms = links.map(link => {
+        const linkForm = document.createElement('form');
+        linkForm.id = `link_form${link._id}`;
+        linkForm.onsubmit = (event) => {
+          event.preventDefault();
+          link._id && ApiService.deleteLink(link._id)
+            .then(() => linkForm.remove());
+        }
+
+        const anchor = document.createElement('a');
+        anchor.href = link.url;
+        anchor.textContent = link.title;
+
+        linkForm.appendChild(anchor);
+
+        const categories = document.createElement('ul');
+        categories.className = 'link-categories';
+
+        link.categories?.forEach(category => {
+          const categoryEl = document.createElement('li');
+          const detail = document.createElement('span');
+          detail.className = 'category';
+          detail.textContent = category;
+          categoryEl.appendChild(detail);
+          categories.appendChild(categoryEl);
+        });
+
+        linkForm.appendChild(categories);
+
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.textContent = 'delete';
+        button.disabled = !link._id;
+
+        linkForm.appendChild(button);
+
+        return linkForm;
+      });
+      forms.forEach(form => linksElement.appendChild(form));
+    }
   }
 
   private async initialiseEditForm(id: string) {

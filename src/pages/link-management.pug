@@ -1,7 +1,9 @@
 extends ../templates/layout.pug
 
+block head 
+  - var pageName = 'link management'
+
 block content
-  - var pageName = 'link-management'
     h1 Link Management
     article 
       h2 Add Link 
@@ -12,7 +14,10 @@ block content
           input(name="url" aria-label="URL for link" type="text" required)
         label Link Categories
           input(name="categories" aria-label="Categories for link" type="text")
-        button(type="submit" aria-label="Submit link") Submit
+        button(type="submit" aria-label="Submit link") submit
+    article 
+      h2 Manage Links
+      section.links
 
 block scripts 
   script(src="../scripts/management.ts" type="module")
